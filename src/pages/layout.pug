@@ -1,0 +1,13 @@
+//- layout.pug
+block variables
+html
+  head
+    block head
+      
+  body
+    h1= header1
+    block content
+      p Source code paragraph
+      p= paragraph1
+      p= paragraph2
+      p Now we see #{interpolated}
