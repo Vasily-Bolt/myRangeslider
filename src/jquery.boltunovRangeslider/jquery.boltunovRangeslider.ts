@@ -1,7 +1,7 @@
 (function ($) {
 
-  $.fn.boltunovRangeslider = function( action, options ){
-    function render ( text ) {
+  $.fn.boltunovRangeslider = <any> function( action: string, options: object ){
+    function render ( text: string ) {
       this.html(text);
     }
     if ( typeof action === 'object' ) {

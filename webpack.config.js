@@ -51,39 +51,42 @@ const cssLoaders = extra => {
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
-  // entry: './src/index.ts',
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.tsx?$/,
-  //       use: 'ts-loader',
-  //       exclude: /node_modules/,
-  //     },
-  //   ],
-  // },
-  // resolve: {
-  //   extensions: ['.tsx', '.ts', '.js'],
-  // },
-  // output: {
-  //   filename: 'bundle.js',
-  //   path: path.resolve(__dirname, 'dist'),
-  // },
-  entry: {
-    main: './index.js',
-    // just: './indexnot.js'
+  entry: './index.ts',
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js','.json','.png'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    }
   },
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
     publicPath: ASSET_PATH
   },
-  resolve: {
-    extensions: ['.js', '.json', '.png'],
-    alias: {
-      // '@models': path.resolve(__dirname, 'src/models'),
-      '@': path.resolve(__dirname, 'src'),
-    }
-  },
+  // entry: {
+  //   main: './index.js',
+  // },
+  // output: {
+  //   filename: filename('js'),
+  //   path: path.resolve(__dirname, 'dist'),
+  //   publicPath: ASSET_PATH
+  // },
+  // resolve: {
+  //   extensions: ['.js', '.json', '.png'],
+  //   alias: {
+  //     // '@models': path.resolve(__dirname, 'src/models'),
+  //     '@': path.resolve(__dirname, 'src'),
+  //   }
+  // },
   optimization: optimization(),
   devServer: {
     port: 4200,
