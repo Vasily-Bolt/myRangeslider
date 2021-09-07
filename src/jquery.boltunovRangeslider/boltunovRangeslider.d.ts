@@ -1,3 +1,6 @@
+// interface JQuery {
+//   boltunovRangeslider: JQuery;
+// }
 interface JQuery {
-  boltunovRangeslider: JQuery;
+  boltunovRangeslider(options?: string[] ): JQuery;
 }
