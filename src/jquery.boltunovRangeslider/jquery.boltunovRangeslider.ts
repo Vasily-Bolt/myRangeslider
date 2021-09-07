@@ -1,8 +1,8 @@
 (function ($) {
-  $.fn.boltunovRangeslider = <any>function( options?: string[] ){
+  $.fn.boltunovRangeslider = <any>function( options?: object ){
     
     const sliderName: string = `${this.attr('id')}-container`;
-    this.prepend(`<div id=${sliderName}></div>`);
+    this.prepend(`<div id=${sliderName} class='boltunov-rangeslider'></div>`);
     const thisSelector = this.children(`#${sliderName}`);
 
     interface SliderState {
@@ -16,52 +16,23 @@
       }
       stateSettings:SliderState; 
       private rangeslider:string = `
-        <div id='${sliderName}-area' class='rangeslider__area'>
-          <div id='${sliderName}-slider-one' class='rangeslider__slider'></div>
+        <div id='${sliderName}-area' class='boltunov-rangeslider__area boltunov-rangeslider__area--horizontal'>
+          <div id='${sliderName}-slider-one' class='boltunov-rangeslider__slider boltunov-rangeslider__slider--round'></div>
         </div>
         `;
 
-
-      constructor( options?: string[] ){
+      constructor( options?: object ){
         this.stateSettings = $.extend( {
-          momentPosition: 50,
+          momentPosition: 0,
         }, options);
       }
       render():void {
         thisSelector.css(this.containerFixedStyles).append(this.rangeslider);
       }
     }
-    // const stateSettings:SliderState = $.extend( {
-    //   momentPosition: 50,
-    // }, options);
-
     
     const view = new View( options );
     view.render();
-
-    // function view( style:SliderState, operation: 'render'|'update' ): void {
-      
-    //   const containerFixedStyles = {
-    //     width: '100%',
-    //     height: '100%',
-        
-    //   };
-    //   const SliderStyles = {
-    //     paddingLeft: style.momentPosition,
-    //   }
-
-    //   const rangeslider = `
-    //   <div id='${sliderName}-area' class='rangeslider__area'>
-    //     <div id='${sliderName}-slider-one' class='rangeslider__slider'></div>
-    //   </div>
-    //   `;
-
-    //   switch( operation ) {
-    //   case 'render' : thisSelector.css(containerFixedStyles).append(rangeslider); break;
-    //   }
-    // }
-
-    // view( stateSettings, 'render' );
 
     return thisSelector;
   }
