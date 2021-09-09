@@ -14,26 +14,45 @@
       signification: string;
       sliderDirection: SliderDirection;
     }
+
+    interface rangesliderDependenceStyles {
+      sliderStartIndent: 'left' | 'top';
+      centeringSliderOnArea: 'left' | null;
+    }
+
+    const sliderHorizontalDependencies: rangesliderDependenceStyles = {
+      sliderStartIndent : 'left',
+      centeringSliderOnArea : null,
+    }
+    const sliderVerticalDependencies: rangesliderDependenceStyles = {
+      sliderStartIndent : 'top',
+      centeringSliderOnArea : 'left',
+    }
+    
     class View {
       readonly containerFixedStyles = {
         width: '100%',
         height: '100%',
       }
-      stateSettings:SliderState; 
-      private rangeslider:string
+      stateSettings: SliderState;
+      private sliderDependencies: rangesliderDependenceStyles;
+      private rangeslider: string;
       private sliderSelectorId = `${sliderName}-slider-one`;
       private areaSelectorId = `${sliderName}-area`;
       constructor( options?: object ){
         this.stateSettings = $.extend( {
-          momentValue: 99,
+          momentValue: 89,
           minValue: 50,
           maxValue: 100,
           signification: '%',
-          sliderDirection: 'horizontal' as const
+          sliderDirection: 'vertical' as const
         }, options);
+        if ( this.stateSettings.sliderDirection == 'vertical' ) this.sliderDependencies = sliderVerticalDependencies;
+        if ( this.stateSettings.sliderDirection == 'horizontal' ) this.sliderDependencies = sliderHorizontalDependencies;
         this.rangeslider = `
           <div id='${this.areaSelectorId}' class='boltunov-rangeslider__area boltunov-rangeslider__area--${this.stateSettings.sliderDirection}'>
-            <div id='${this.sliderSelectorId}' class='boltunov-rangeslider__slider boltunov-rangeslider__slider--round'></div>
+            <div id='${this.sliderSelectorId}' class='boltunov-rangeslider__slider boltunov-rangeslider__slider--round' 
+            style='${this.sliderDependencies.centeringSliderOnArea}: -50%'></div>
           </div>
           `;
       }
@@ -46,15 +65,22 @@
 
       update():void {
         this.checkStatesAreProper();
-        function calculateLeftMargin():number {
-          const areaWidth = $(`#${this.areaSelectorId}`).width() - $(`#${this.sliderSelectorId}`).width();
-          const stepInPx = areaWidth / (this.stateSettings.maxValue - this.stateSettings.minValue);
-          const leftMargin = stepInPx * (this.stateSettings.momentValue - this.stateSettings.minValue);
-          return leftMargin;
+        function calculateStartMargin():number {
+          // Установка бегунка в нужное положение в зависимости от направления области бегунка
+          // Может можно воспользоваться другим способом? 
+          let areaValue: number;
+          switch( this.stateSettings.sliderDirection ) {
+            case 'vertical' : areaValue = $(`#${this.areaSelectorId}`).height() - $(`#${this.sliderSelectorId}`).height(); break;
+            default : areaValue = $(`#${this.areaSelectorId}`).width() - $(`#${this.sliderSelectorId}`).width();
+          }
+          
+          const stepInPx = areaValue / (this.stateSettings.maxValue - this.stateSettings.minValue);
+          const startMargin = stepInPx * (this.stateSettings.momentValue - this.stateSettings.minValue);
+          return startMargin;
         }
         
-        const leftMargin = calculateLeftMargin.bind(this)();
-        $(`#${this.sliderSelectorId}`).css('left',`${leftMargin}px`);
+        const indent = calculateStartMargin.bind(this)();
+        $(`#${this.sliderSelectorId}`).css(this.sliderDependencies.sliderStartIndent,`${indent}px`);
       }
 
       render():void {
