@@ -2,5 +2,5 @@
 //   boltunovRangeslider: JQuery;
 // }
 interface JQuery {
-  boltunovRangeslider(options?: object ): JQuery;
+  boltunovRangeslider(sliderAreaOptions?: object ): JQuery;
 }
