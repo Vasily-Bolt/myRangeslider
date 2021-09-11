@@ -8,6 +8,8 @@
 
     interface SliderState {
       momentValue: number;    // Устанавливает текущее значение между minValue и maxValue
+      sliderPointerDirection?: rangesliderDependenceStyles; //READONLY или PRIVATE?
+      readonly idSliderSelector: string;
     }
     interface SliderAreaState {
       minValue: number;   // Максимально возможное значение
@@ -15,6 +17,7 @@
       step: number;
       signification: string;  // Условное обозначение (единица измерения, если угодно)
       sliderDirection: SliderDirection;   // Направление ползунка (горизонтальный или вертикальный)
+      readonly idAreaSelectorId: string;
     }
     interface RangesliderStateOptions extends SliderState, SliderAreaState {
     }
@@ -25,12 +28,14 @@
     }
     
     const rangesliderStateOptions: RangesliderStateOptions = $.extend( {
-        momentValue: 55,
+        momentValue: 53,
+        idSliderSelector: `${sliderName}-pointer-one`,
         minValue: 50,
         maxValue: 100,
         step : 5,
         signification: '%',
-        sliderDirection: 'horizontal' as const  
+        sliderDirection: 'horizontal' as const,
+        idAreaSelectorId: `${sliderName}-area`,
       }, sliderOptions);
     const sliderHorizontalDependencies: rangesliderDependenceStyles = {
       sliderStartIndent : 'left',
@@ -45,20 +50,22 @@
 
 
     class View {
-      // stateSettings: SliderState;
-      // private sliderDependencies: rangesliderDependenceStyles;
+      // poinerState: SliderState;
       // private rangeslider: string;
-      // private sliderSelectorId = `${sliderName}-slider-one`;
       // private areaSelectorId = `${sliderName}-area`;
+      // readonly areaSelectorId = `${sliderName}-area`;
+      // readonly sliderSelectorId = `${sliderName}-pointer-one`;
       sliderLocalOptions: RangesliderStateOptions;
 
       constructor( rangesliderOptions: RangesliderStateOptions ){
         // Надо сделать декомпозицию SliderOptions на отдельные объекты для Area и Pointer'ов
         this.sliderLocalOptions = rangesliderOptions;
+        if ( this.sliderLocalOptions.sliderDirection == 'vertical' ) this.sliderLocalOptions.sliderPointerDirection = sliderVerticalDependencies;
+        if ( this.sliderLocalOptions.sliderDirection == 'horizontal' ) this.sliderLocalOptions.sliderPointerDirection = sliderHorizontalDependencies;
         // this.rangeArea = new RangeArea( sliderAreaOptions );
       }
 
-      rangeAreaAppendToHtml( sliderAreaOptions: SliderAreaState ):void {   // Метод с классом для создания области rangecslider
+      private rangeAreaAppendToHtml( rangesliderState: RangesliderStateOptions ):void {   // Метод с классом для создания области rangeslider
         class RangeArea {   // Класс для создания области слайдера
           readonly containerFixedStyles = {
             width: '100%',
@@ -66,38 +73,69 @@
           }
           areaState: SliderAreaState;
           private rangeslider: string;
-          private areaSelectorId = `${sliderName}-area`;
-          constructor( sliderAreaOptions: SliderAreaState){
+          
+          constructor( sliderAreaOptions: RangesliderStateOptions){
             this.areaState = {
               minValue: sliderAreaOptions.minValue,
               maxValue: sliderAreaOptions.maxValue,
               step : sliderAreaOptions.step,
               signification: sliderAreaOptions.signification,
               sliderDirection: sliderAreaOptions.sliderDirection,
+              idAreaSelectorId: sliderAreaOptions.idAreaSelectorId
             };
             this.rangeslider = `
-              <div id='${this.areaSelectorId}' class='boltunov-rangeslider__area boltunov-rangeslider__area--${this.areaState.sliderDirection}'></div>`;
+              <div id='${this.areaState.idAreaSelectorId}' 
+              class='boltunov-rangeslider__area boltunov-rangeslider__area--${this.areaState.sliderDirection}'></div>`;
           }
           render():void {
             thisSelector.css(this.containerFixedStyles).append(this.rangeslider);
           }
+          
         }
-        const areaRenderingFunction = new RangeArea( sliderAreaOptions );
+        const areaRenderingFunction = new RangeArea( rangesliderState );
         areaRenderingFunction.render();
-      }
-
-      pointerSliderAppendToHtml( ){
+        // return areaRenderingFunction.areaSelectorId;
 
       }
-      
+
+      private pointerSliderAppendToHtml( rangesliderState: RangesliderStateOptions ): void{    // Метод для создания подкласса слайдера (указателя)
+        class SliderPointer {
+          poinerState: SliderState;
+          private sliderPointer: string;
+
+          constructor( sliderOptions: RangesliderStateOptions ){
+            this.poinerState = {
+              momentValue: sliderOptions.momentValue,
+              idSliderSelector: sliderOptions.idSliderSelector,
+            }
+            this.sliderPointer = `
+              <div id='${this.poinerState.idSliderSelector}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round' 
+              style='${sliderOptions.sliderPointerDirection.centeringSliderOnArea}: -50%'></div>`;
+          }
+          checkStatesAreProper(){   // Проверка соответствия значения указателя шагу
+            if ( this.poinerState.momentValue < rangesliderState.minValue ) this.poinerState.momentValue = rangesliderState.minValue
+            else if ( this.poinerState.momentValue > rangesliderState.maxValue )
+              this.poinerState.momentValue = rangesliderState.maxValue;
+            console.log( Math.round(this.poinerState.momentValue/rangesliderState.step)*rangesliderState.step );
+          }
+          renderPointer(): void{
+            this.checkStatesAreProper();
+            $(`#${rangesliderState.idAreaSelectorId}`).append(this.sliderPointer);
+            // Откуда взять селектор для выбора области для вставки?
+          }
+        }
+        const sliderPointerRenderingFunction = new SliderPointer( rangesliderState );
+        sliderPointerRenderingFunction.renderPointer();
+      }
+      // 
       render() {
-        this.rangeAreaAppendToHtml( this.sliderLocalOptions );
-        // this.rangeArea.render();
+        const areaSelector = this.rangeAreaAppendToHtml( this.sliderLocalOptions );    // Добавляем область в блок HTML
+        this.pointerSliderAppendToHtml( this.sliderLocalOptions );
       }
     }
 
 
-      //   this.stateSettings = $.extend( {
+      //   this.poinerState = $.extend( {
       //     momentValue: 53,
       //     minValue: 50,
       //     maxValue: 100,
@@ -105,10 +143,10 @@
       //     signification: '%',
       //     sliderDirection: 'vertical' as const
       //   }, sliderAreaOptions);
-      //   if ( this.stateSettings.sliderDirection == 'vertical' ) this.sliderDependencies = sliderVerticalDependencies;
-      //   if ( this.stateSettings.sliderDirection == 'horizontal' ) this.sliderDependencies = sliderHorizontalDependencies;
+      //   if ( this.poinerState.sliderDirection == 'vertical' ) this.sliderDependencies = sliderVerticalDependencies;
+      //   if ( this.poinerState.sliderDirection == 'horizontal' ) this.sliderDependencies = sliderHorizontalDependencies;
       //   this.rangeslider = `
-      //     <div id='${this.areaSelectorId}' class='boltunov-rangeslider__area boltunov-rangeslider__area--${this.stateSettings.sliderDirection}'>
+      //     <div id='${this.areaSelectorId}' class='boltunov-rangeslider__area boltunov-rangeslider__area--${this.poinerState.sliderDirection}'>
       //       <div id='${this.sliderSelectorId}' class='boltunov-rangeslider__slider boltunov-rangeslider__slider--round' 
       //       style='${this.sliderDependencies.centeringSliderOnArea}: -50%'></div>
       //     </div>
@@ -116,10 +154,10 @@
       // }
 
       // checkStatesAreProper(){
-      //   if ( this.stateSettings.momentValue < this.stateSettings.minValue ) this.stateSettings.momentValue = this.stateSettings.minValue
-      //   else if ( this.stateSettings.momentValue > this.stateSettings.maxValue )
-      //     this.stateSettings.momentValue = this.stateSettings.maxValue;
-      //   console.log( Math.round(this.stateSettings.momentValue/this.stateSettings.step)*this.stateSettings.step );
+      //   if ( this.poinerState.momentValue < this.poinerState.minValue ) this.poinerState.momentValue = this.poinerState.minValue
+      //   else if ( this.poinerState.momentValue > this.poinerState.maxValue )
+      //     this.poinerState.momentValue = this.poinerState.maxValue;
+      //   console.log( Math.round(this.poinerState.momentValue/this.poinerState.step)*this.poinerState.step );
       // }
 
       // update():void {
@@ -128,14 +166,14 @@
       //     // Установка бегунка в нужное положение в зависимости от направления области бегунка
       //     // Может можно воспользоваться другим способом? 
       //     let areaValue: number;
-      //     switch( this.stateSettings.sliderDirection ) {
+      //     switch( this.poinerState.sliderDirection ) {
       //       case 'vertical' : areaValue = $(`#${this.areaSelectorId}`).height() - $(`#${this.sliderSelectorId}`).height(); break;
       //       default : areaValue = $(`#${this.areaSelectorId}`).width() - $(`#${this.sliderSelectorId}`).width();
       //     }
           
-      //     const stepInPx = areaValue / (this.stateSettings.maxValue - this.stateSettings.minValue);
-      //     console.log( `Step-${stepInPx}, momentValue-${this.stateSettings.momentValue}` );
-      //     const startMargin = stepInPx * (this.stateSettings.momentValue - this.stateSettings.minValue);
+      //     const stepInPx = areaValue / (this.poinerState.maxValue - this.poinerState.minValue);
+      //     console.log( `Step-${stepInPx}, momentValue-${this.poinerState.momentValue}` );
+      //     const startMargin = stepInPx * (this.poinerState.momentValue - this.poinerState.minValue);
       //     return startMargin;
       //   }
         
