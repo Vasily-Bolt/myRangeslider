@@ -28,7 +28,7 @@
     }
     
     const rangesliderStateOptions: RangesliderStateOptions = $.extend( {
-        momentValue: 53,
+        momentValue: 72,
         idSliderSelector: `${sliderName}-pointer-one`,
         minValue: 50,
         maxValue: 100,
@@ -50,11 +50,6 @@
 
 
     class View {
-      // poinerState: SliderState;
-      // private rangeslider: string;
-      // private areaSelectorId = `${sliderName}-area`;
-      // readonly areaSelectorId = `${sliderName}-area`;
-      // readonly sliderSelectorId = `${sliderName}-pointer-one`;
       sliderLocalOptions: RangesliderStateOptions;
 
       constructor( rangesliderOptions: RangesliderStateOptions ){
@@ -81,7 +76,7 @@
               step : sliderAreaOptions.step,
               signification: sliderAreaOptions.signification,
               sliderDirection: sliderAreaOptions.sliderDirection,
-              idAreaSelectorId: sliderAreaOptions.idAreaSelectorId
+              idAreaSelectorId: sliderAreaOptions.idAreaSelectorId,
             };
             this.rangeslider = `
               <div id='${this.areaState.idAreaSelectorId}' 
@@ -98,7 +93,8 @@
 
       }
 
-      private pointerSliderAppendToHtml( rangesliderState: RangesliderStateOptions ): void{    // Метод для создания подкласса слайдера (указателя)
+// Метод для создания подкласса слайдера (указателя).
+      private pointerSliderAppendToHtml( rangesliderState: RangesliderStateOptions ){    
         class SliderPointer {
           poinerState: SliderState;
           private sliderPointer: string;
@@ -112,85 +108,64 @@
               <div id='${this.poinerState.idSliderSelector}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round' 
               style='${sliderOptions.sliderPointerDirection.centeringSliderOnArea}: -50%'></div>`;
           }
-          checkStatesAreProper(){   // Проверка соответствия значения указателя шагу
-            if ( this.poinerState.momentValue < rangesliderState.minValue ) this.poinerState.momentValue = rangesliderState.minValue
-            else if ( this.poinerState.momentValue > rangesliderState.maxValue )
-              this.poinerState.momentValue = rangesliderState.maxValue;
-            console.log( Math.round(this.poinerState.momentValue/rangesliderState.step)*rangesliderState.step );
-          }
+          
           renderPointer(): void{
-            this.checkStatesAreProper();
             $(`#${rangesliderState.idAreaSelectorId}`).append(this.sliderPointer);
             // Откуда взять селектор для выбора области для вставки?
           }
+
         }
         const sliderPointerRenderingFunction = new SliderPointer( rangesliderState );
         sliderPointerRenderingFunction.renderPointer();
       }
-      // 
-      render() {
-        const areaSelector = this.rangeAreaAppendToHtml( this.sliderLocalOptions );    // Добавляем область в блок HTML
+
+      checkStatesAreProper(): number{   // Проверка соответствия значения указателя шагу
+        if ( this.sliderLocalOptions.momentValue < this.sliderLocalOptions.minValue ) return this.sliderLocalOptions.minValue;
+        else if ( this.sliderLocalOptions.momentValue > this.sliderLocalOptions.maxValue )
+          return this.sliderLocalOptions.maxValue;
+        return Math.round(this.sliderLocalOptions.momentValue/this.sliderLocalOptions.step) * this.sliderLocalOptions.step;
+      }
+      
+      render():void {
+        this.rangeAreaAppendToHtml( this.sliderLocalOptions );    // Добавляем область в блок HTML
         this.pointerSliderAppendToHtml( this.sliderLocalOptions );
       }
-    }
 
+      update():void{
+        console.log('update func');
+        console.log( this.sliderLocalOptions.momentValue );
+        this.sliderLocalOptions.momentValue = this.checkStatesAreProper();
+        console.log( this.sliderLocalOptions.momentValue );
 
-      //   this.poinerState = $.extend( {
-      //     momentValue: 53,
-      //     minValue: 50,
-      //     maxValue: 100,
-      //     step : 5,
-      //     signification: '%',
-      //     sliderDirection: 'vertical' as const
-      //   }, sliderAreaOptions);
-      //   if ( this.poinerState.sliderDirection == 'vertical' ) this.sliderDependencies = sliderVerticalDependencies;
-      //   if ( this.poinerState.sliderDirection == 'horizontal' ) this.sliderDependencies = sliderHorizontalDependencies;
-      //   this.rangeslider = `
-      //     <div id='${this.areaSelectorId}' class='boltunov-rangeslider__area boltunov-rangeslider__area--${this.poinerState.sliderDirection}'>
-      //       <div id='${this.sliderSelectorId}' class='boltunov-rangeslider__slider boltunov-rangeslider__slider--round' 
-      //       style='${this.sliderDependencies.centeringSliderOnArea}: -50%'></div>
-      //     </div>
-      //     `;
-      // }
-
-      // checkStatesAreProper(){
-      //   if ( this.poinerState.momentValue < this.poinerState.minValue ) this.poinerState.momentValue = this.poinerState.minValue
-      //   else if ( this.poinerState.momentValue > this.poinerState.maxValue )
-      //     this.poinerState.momentValue = this.poinerState.maxValue;
-      //   console.log( Math.round(this.poinerState.momentValue/this.poinerState.step)*this.poinerState.step );
-      // }
+      }
 
       // update():void {
-      //   this.checkStatesAreProper();
       //   function calculateStartMargin():number {
       //     // Установка бегунка в нужное положение в зависимости от направления области бегунка
       //     // Может можно воспользоваться другим способом? 
+      //     console.log( this.sliderLocalOptions.sliderDirection );
       //     let areaValue: number;
-      //     switch( this.poinerState.sliderDirection ) {
-      //       case 'vertical' : areaValue = $(`#${this.areaSelectorId}`).height() - $(`#${this.sliderSelectorId}`).height(); break;
-      //       default : areaValue = $(`#${this.areaSelectorId}`).width() - $(`#${this.sliderSelectorId}`).width();
+      //     switch( this.sliderLocalOptions.sliderDirection ) {
+      //       case 'vertical' : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).height() - 
+      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).height(); break;
+      //       default : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).width() - 
+      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).width();
       //     }
-          
-      //     const stepInPx = areaValue / (this.poinerState.maxValue - this.poinerState.minValue);
-      //     console.log( `Step-${stepInPx}, momentValue-${this.poinerState.momentValue}` );
-      //     const startMargin = stepInPx * (this.poinerState.momentValue - this.poinerState.minValue);
+      //     console.log( areaValue );
+      //     const stepInPx = areaValue / (this.sliderLocalOptions.maxValue - this.sliderLocalOptions.minValue);
+      //     console.log( `Step-${stepInPx}, momentValue-${this.sliderLocalOptions.momentValue}` );
+      //     const startMargin = stepInPx * (this.sliderLocalOptions.momentValue - this.sliderLocalOptions.minValue);
       //     return startMargin;
       //   }
         
       //   const indent = calculateStartMargin.bind(this)();
-      //   $(`#${this.sliderSelectorId}`).css(this.sliderDependencies.sliderStartIndent,`${indent}px`);
-      // }
-
-      // render():void {
-      //   thisSelector.css(this.containerFixedStyles).append(this.rangeslider);
-      //   this.update();
-      // }
-
-    // }
+      //   // $(`#${this.sliderSelectorId}`).css(this.sliderDependencies.sliderStartIndent,`${indent}px`);
+      // }    
+    }
     
     const view = new View( rangesliderStateOptions );
     view.render();
-
+    view.update();
     return thisSelector;
   }
 })(jQuery);
