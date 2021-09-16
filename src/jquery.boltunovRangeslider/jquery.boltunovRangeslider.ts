@@ -47,7 +47,44 @@
     }
     
 
+    class Model {
+      sliderLocalOptions: RangesliderStateOptions;
 
+      constructor( rangesliderOptions: RangesliderStateOptions ){
+        this.sliderLocalOptions = rangesliderOptions;
+      }
+
+      checkStatesAreProper(): void {   // Проверка соответствия значения указателя шагу
+        if ( this.sliderLocalOptions.momentValue < this.sliderLocalOptions.minValue ) this.sliderLocalOptions.momentValue = this.sliderLocalOptions.minValue;
+        else if ( this.sliderLocalOptions.momentValue > this.sliderLocalOptions.maxValue )
+          this.sliderLocalOptions.momentValue = this.sliderLocalOptions.maxValue;
+          this.sliderLocalOptions.momentValue = Math.round(this.sliderLocalOptions.momentValue/this.sliderLocalOptions.step) * this.sliderLocalOptions.step;
+      }
+
+      // update():void {
+      //   function calculateStartMargin():number {
+      //     // Установка бегунка в нужное положение в зависимости от направления области бегунка
+      //     // Может можно воспользоваться другим способом? 
+      //     console.log( this.sliderLocalOptions.sliderDirection );
+      //     let areaValue: number;
+      //     switch( this.sliderLocalOptions.sliderDirection ) {
+      //       case 'vertical' : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).height() - 
+      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).height(); break;
+      //       default : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).width() - 
+      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).width();
+      //     }
+      //     console.log( areaValue );
+      //     const stepInPx = areaValue / (this.sliderLocalOptions.maxValue - this.sliderLocalOptions.minValue);
+      //     console.log( `Step-${stepInPx}, momentValue-${this.sliderLocalOptions.momentValue}` );
+      //     const startMargin = stepInPx * (this.sliderLocalOptions.momentValue - this.sliderLocalOptions.minValue);
+      //     return startMargin;
+      //   }
+        
+      //   const indent = calculateStartMargin.bind(this)();
+      //   // $(`#${this.sliderSelectorId}`).css(this.sliderDependencies.sliderStartIndent,`${indent}px`);
+      // }    
+
+    }
 
     class View {
       sliderLocalOptions: RangesliderStateOptions;
@@ -70,7 +107,7 @@
           private rangeslider: string;
           
           constructor( sliderAreaOptions: RangesliderStateOptions){
-            this.areaState = {
+            this.areaState = {    // Может просто клонировать полностью объект или просто ссылкой ('=') назначить?
               minValue: sliderAreaOptions.minValue,
               maxValue: sliderAreaOptions.maxValue,
               step : sliderAreaOptions.step,
@@ -119,53 +156,22 @@
         sliderPointerRenderingFunction.renderPointer();
       }
 
-      checkStatesAreProper(): number{   // Проверка соответствия значения указателя шагу
-        if ( this.sliderLocalOptions.momentValue < this.sliderLocalOptions.minValue ) return this.sliderLocalOptions.minValue;
-        else if ( this.sliderLocalOptions.momentValue > this.sliderLocalOptions.maxValue )
-          return this.sliderLocalOptions.maxValue;
-        return Math.round(this.sliderLocalOptions.momentValue/this.sliderLocalOptions.step) * this.sliderLocalOptions.step;
-      }
-      
       render():void {
         this.rangeAreaAppendToHtml( this.sliderLocalOptions );    // Добавляем область в блок HTML
         this.pointerSliderAppendToHtml( this.sliderLocalOptions );
       }
 
       update():void{
-        console.log('update func');
-        console.log( this.sliderLocalOptions.momentValue );
-        this.sliderLocalOptions.momentValue = this.checkStatesAreProper();
-        console.log( this.sliderLocalOptions.momentValue );
-
+        $(`#${this.sliderLocalOptions.idSliderSelector}`);
       }
 
-      // update():void {
-      //   function calculateStartMargin():number {
-      //     // Установка бегунка в нужное положение в зависимости от направления области бегунка
-      //     // Может можно воспользоваться другим способом? 
-      //     console.log( this.sliderLocalOptions.sliderDirection );
-      //     let areaValue: number;
-      //     switch( this.sliderLocalOptions.sliderDirection ) {
-      //       case 'vertical' : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).height() - 
-      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).height(); break;
-      //       default : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).width() - 
-      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).width();
-      //     }
-      //     console.log( areaValue );
-      //     const stepInPx = areaValue / (this.sliderLocalOptions.maxValue - this.sliderLocalOptions.minValue);
-      //     console.log( `Step-${stepInPx}, momentValue-${this.sliderLocalOptions.momentValue}` );
-      //     const startMargin = stepInPx * (this.sliderLocalOptions.momentValue - this.sliderLocalOptions.minValue);
-      //     return startMargin;
-      //   }
-        
-      //   const indent = calculateStartMargin.bind(this)();
-      //   // $(`#${this.sliderSelectorId}`).css(this.sliderDependencies.sliderStartIndent,`${indent}px`);
-      // }    
     }
-    
+    const model = new Model( rangesliderStateOptions );
     const view = new View( rangesliderStateOptions );
+    
+    model.checkStatesAreProper();
     view.render();
-    view.update();
+
     return thisSelector;
   }
 })(jQuery);
