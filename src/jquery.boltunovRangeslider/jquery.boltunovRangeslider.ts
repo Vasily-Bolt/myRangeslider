@@ -9,9 +9,11 @@
     interface SliderState {
       momentValue: number;    // Устанавливает текущее значение между minValue и maxValue
       sliderPointerDirection?: rangesliderDependenceStyles; //READONLY или PRIVATE?
-      readonly idSliderSelector: string;
+      ptrStartMargin: number;
+      readonly pointerIdSelector: string;
     }
     interface SliderAreaState {
+      // rangesliderType: 'single' | 'range';
       minValue: number;   // Максимально возможное значение
       maxValue: number;   // Минимально возможное значение
       step: number;
@@ -19,6 +21,7 @@
       sliderDirection: SliderDirection;   // Направление ползунка (горизонтальный или вертикальный)
       readonly idAreaSelectorId: string;
     }
+
     interface RangesliderStateOptions extends SliderState, SliderAreaState {
     }
 
@@ -28,8 +31,9 @@
     }
     
     const rangesliderStateOptions: RangesliderStateOptions = $.extend( {
-        momentValue: 72,
-        idSliderSelector: `${sliderName}-pointer-one`,
+        pointerIdSelector: `${sliderName}-pointer-one`,
+        momentValue: 62,
+        ptrStartMargin: 0,
         minValue: 50,
         maxValue: 100,
         step : 5,
@@ -48,22 +52,19 @@
     
 
     class Model {
-      sliderLocalOptions: RangesliderStateOptions;
-
-      constructor( rangesliderOptions: RangesliderStateOptions ){
-        this.sliderLocalOptions = rangesliderOptions;
-      }
       // проверка направления области, соответствия значения указателя шагу
-      checkStatesAreProper(): void {   
-        if ( this.sliderLocalOptions.sliderDirection == 'vertical' ) this.sliderLocalOptions.sliderPointerDirection = sliderVerticalDependencies;
-        if ( this.sliderLocalOptions.sliderDirection == 'horizontal' ) this.sliderLocalOptions.sliderPointerDirection = sliderHorizontalDependencies;
+      checkStatesAreProper( sliderLocalOptions: RangesliderStateOptions ): void {   
+        if ( sliderLocalOptions.sliderDirection == 'vertical' ) sliderLocalOptions.sliderPointerDirection = sliderVerticalDependencies;
+        if ( sliderLocalOptions.sliderDirection == 'horizontal' ) sliderLocalOptions.sliderPointerDirection = sliderHorizontalDependencies;
 
-        if ( this.sliderLocalOptions.momentValue < this.sliderLocalOptions.minValue ) this.sliderLocalOptions.momentValue = this.sliderLocalOptions.minValue;
-        else if ( this.sliderLocalOptions.momentValue > this.sliderLocalOptions.maxValue )
-          this.sliderLocalOptions.momentValue = this.sliderLocalOptions.maxValue;
-          this.sliderLocalOptions.momentValue = Math.round(this.sliderLocalOptions.momentValue/this.sliderLocalOptions.step) * this.sliderLocalOptions.step;
-      }
-
+        if ( sliderLocalOptions.momentValue < sliderLocalOptions.minValue ) sliderLocalOptions.momentValue = sliderLocalOptions.minValue;
+        else if ( sliderLocalOptions.momentValue > sliderLocalOptions.maxValue )
+          sliderLocalOptions.momentValue = sliderLocalOptions.maxValue;
+          sliderLocalOptions.momentValue = Math.round(sliderLocalOptions.momentValue/sliderLocalOptions.step) * sliderLocalOptions.step;
+        const totalSteps = ( sliderLocalOptions.maxValue - sliderLocalOptions.minValue ) / sliderLocalOptions.step;
+        const stepsMade = ( sliderLocalOptions.momentValue - sliderLocalOptions.minValue ) / sliderLocalOptions.step;
+        sliderLocalOptions.ptrStartMargin = ( stepsMade / totalSteps ) * 100;
+    }
     }
 
     class View {
@@ -104,26 +105,22 @@
       // Метод для создания подкласса слайдера (указателя).
       private pointerSliderAppendToHtml( rangesliderState: RangesliderStateOptions ){    
         class SliderPointer {
-          poinerState: SliderState;
           private sliderPointer: string;
 
-          constructor( sliderOptions: RangesliderStateOptions ){
-            this.poinerState = {
-              momentValue: sliderOptions.momentValue,
-              idSliderSelector: sliderOptions.idSliderSelector,
-            }
+          constructor (){
             this.sliderPointer = `
-              <div id='${this.poinerState.idSliderSelector}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round' 
-              style='${sliderOptions.sliderPointerDirection.centeringSliderOnArea}: -50%'></div>`;
+              <div id='${rangesliderState.pointerIdSelector}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round' 
+              style='${rangesliderState.sliderPointerDirection.centeringSliderOnArea}: -50%; 
+              ${rangesliderState.sliderPointerDirection.sliderStartIndent}: ${rangesliderState.ptrStartMargin}%'></div>`;
           }
           
-          renderPointer(): void{
+          renderPointer(rangesliderState: RangesliderStateOptions): void{
             $(`#${rangesliderState.idAreaSelectorId}`).append(this.sliderPointer);
           }
 
         }
-        const sliderPointerRenderingFunction = new SliderPointer( rangesliderState );
-        sliderPointerRenderingFunction.renderPointer();
+        const FirstPointerRenderingFunction = new SliderPointer( );
+        FirstPointerRenderingFunction.renderPointer(rangesliderState);
       }
 
       render( sliderLocalOptions: RangesliderStateOptions ):void {
@@ -133,13 +130,13 @@
 
       update( sliderLocalOptions: RangesliderStateOptions ):void{
         console.log('update');
-        // $(`#${this.sliderLocalOptions.idSliderSelector}`);
+        // $(`#${this.sliderLocalOptions.pointerIdSelector}`);
       }
 
     }
-    const model = new Model( rangesliderStateOptions );
+    const model = new Model(  );
     const view = new View(  );
-    model.checkStatesAreProper();
+    model.checkStatesAreProper( rangesliderStateOptions ); // Меняет объект... Это не правильно
     view.render( rangesliderStateOptions );
 
     return thisSelector;
