@@ -53,49 +53,20 @@
       constructor( rangesliderOptions: RangesliderStateOptions ){
         this.sliderLocalOptions = rangesliderOptions;
       }
+      // проверка направления области, соответствия значения указателя шагу
+      checkStatesAreProper(): void {   
+        if ( this.sliderLocalOptions.sliderDirection == 'vertical' ) this.sliderLocalOptions.sliderPointerDirection = sliderVerticalDependencies;
+        if ( this.sliderLocalOptions.sliderDirection == 'horizontal' ) this.sliderLocalOptions.sliderPointerDirection = sliderHorizontalDependencies;
 
-      checkStatesAreProper(): void {   // Проверка соответствия значения указателя шагу
         if ( this.sliderLocalOptions.momentValue < this.sliderLocalOptions.minValue ) this.sliderLocalOptions.momentValue = this.sliderLocalOptions.minValue;
         else if ( this.sliderLocalOptions.momentValue > this.sliderLocalOptions.maxValue )
           this.sliderLocalOptions.momentValue = this.sliderLocalOptions.maxValue;
           this.sliderLocalOptions.momentValue = Math.round(this.sliderLocalOptions.momentValue/this.sliderLocalOptions.step) * this.sliderLocalOptions.step;
       }
 
-      // update():void {
-      //   function calculateStartMargin():number {
-      //     // Установка бегунка в нужное положение в зависимости от направления области бегунка
-      //     // Может можно воспользоваться другим способом? 
-      //     console.log( this.sliderLocalOptions.sliderDirection );
-      //     let areaValue: number;
-      //     switch( this.sliderLocalOptions.sliderDirection ) {
-      //       case 'vertical' : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).height() - 
-      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).height(); break;
-      //       default : areaValue = $(`#${this.sliderLocalOptions.idAreaSelectorId}`).width() - 
-      //         $(`#${this.sliderLocalOptions.idSliderSelector}`).width();
-      //     }
-      //     console.log( areaValue );
-      //     const stepInPx = areaValue / (this.sliderLocalOptions.maxValue - this.sliderLocalOptions.minValue);
-      //     console.log( `Step-${stepInPx}, momentValue-${this.sliderLocalOptions.momentValue}` );
-      //     const startMargin = stepInPx * (this.sliderLocalOptions.momentValue - this.sliderLocalOptions.minValue);
-      //     return startMargin;
-      //   }
-        
-      //   const indent = calculateStartMargin.bind(this)();
-      //   // $(`#${this.sliderSelectorId}`).css(this.sliderDependencies.sliderStartIndent,`${indent}px`);
-      // }    
-
     }
 
     class View {
-      sliderLocalOptions: RangesliderStateOptions;
-
-      constructor( rangesliderOptions: RangesliderStateOptions ){
-        // Надо сделать декомпозицию SliderOptions на отдельные объекты для Area и Pointer'ов
-        this.sliderLocalOptions = rangesliderOptions;
-        if ( this.sliderLocalOptions.sliderDirection == 'vertical' ) this.sliderLocalOptions.sliderPointerDirection = sliderVerticalDependencies;
-        if ( this.sliderLocalOptions.sliderDirection == 'horizontal' ) this.sliderLocalOptions.sliderPointerDirection = sliderHorizontalDependencies;
-        // this.rangeArea = new RangeArea( sliderAreaOptions );
-      }
 
       private rangeAreaAppendToHtml( rangesliderState: RangesliderStateOptions ):void {   // Метод с классом для создания области rangeslider
         class RangeArea {   // Класс для создания области слайдера
@@ -130,7 +101,7 @@
 
       }
 
-// Метод для создания подкласса слайдера (указателя).
+      // Метод для создания подкласса слайдера (указателя).
       private pointerSliderAppendToHtml( rangesliderState: RangesliderStateOptions ){    
         class SliderPointer {
           poinerState: SliderState;
@@ -148,7 +119,6 @@
           
           renderPointer(): void{
             $(`#${rangesliderState.idAreaSelectorId}`).append(this.sliderPointer);
-            // Откуда взять селектор для выбора области для вставки?
           }
 
         }
@@ -156,21 +126,21 @@
         sliderPointerRenderingFunction.renderPointer();
       }
 
-      render():void {
-        this.rangeAreaAppendToHtml( this.sliderLocalOptions );    // Добавляем область в блок HTML
-        this.pointerSliderAppendToHtml( this.sliderLocalOptions );
+      render( sliderLocalOptions: RangesliderStateOptions ):void {
+        this.rangeAreaAppendToHtml( sliderLocalOptions );    // Добавляем область в блок HTML
+        this.pointerSliderAppendToHtml( sliderLocalOptions );
       }
 
-      update():void{
-        $(`#${this.sliderLocalOptions.idSliderSelector}`);
+      update( sliderLocalOptions: RangesliderStateOptions ):void{
+        console.log('update');
+        // $(`#${this.sliderLocalOptions.idSliderSelector}`);
       }
 
     }
     const model = new Model( rangesliderStateOptions );
-    const view = new View( rangesliderStateOptions );
-    
+    const view = new View(  );
     model.checkStatesAreProper();
-    view.render();
+    view.render( rangesliderStateOptions );
 
     return thisSelector;
   }
