@@ -1,8 +1,6 @@
 (function ($) {
   $.fn.boltunovRangeslider = <any>function( sliderOptions?: object ){ 
-    const sliderName: string = `${this.attr('id')}`;
-    this.prepend(`<div id=${sliderName}-container class='boltunov-rangeslider'></div>`);
-    const thisSelector = this.children(`#${sliderName}-container`);
+    
 
     type SliderDirection = 'horizontal' | 'vertical';   // Тип для описания направления ползунка
 
@@ -22,7 +20,7 @@
       momentValue: number;    // Устанавливает текущее значение между minValue и maxValue
       sliderPointerDirection: rangesliderDependenceStyles; //READONLY или PRIVATE?
       ptrStartMargin: number;
-      readonly pointerIdSelector: string;
+      // readonly pointerIdSelector: string;
       rangesliderType: 'single' | 'range';
       minValue: number;   // Максимально возможное значение
       maxValue: number;   // Минимально возможное значение
@@ -30,7 +28,7 @@
       step: number;
       signification: string;  // Условное обозначение (единица измерения, если угодно)
       sliderDirection: SliderDirection;   // Направление ползунка (горизонтальный или вертикальный)
-      readonly idAreaSelectorId: string;
+      // readonly idAreaSelectorId: string;
     }
 
     class Model {
@@ -42,14 +40,14 @@
           momentValue: 62,
           sliderPointerDirection: sliderHorizontalDependencies,
           ptrStartMargin: 0,
-          pointerIdSelector: `${sliderName}-pointer-one`,
+          // pointerIdSelector: `${sliderName}-pointer-one`,
           rangesliderType: 'single' as const,
           minValue: 0,
           maxValue: 100,
           step : 5,
           signification: '%',
           sliderDirection: 'horizontal' as const,
-          idAreaSelectorId: `${sliderName}-area`,
+          // idAreaSelectorId: `${sliderName}-area`,
         }, AddonOptions);
       }
 
@@ -57,20 +55,49 @@
         return this.rangesliderStateOptions;
       }
     }
+
     class View {
-      
+      private pointerIdSelector: string;
+      area: object;
+      areaSubView( parentBlock: JQuery ): object {
+        class AreaSubView {
+          areaIdSelector: JQuery
+          
+          constructor( parentBlock: JQuery ) {
+            const sliderName: string = `${parentBlock.attr('id')}`;
+            parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area' class='boltunov-rangeslider__area'></div>`);
+            this.areaIdSelector = parentBlock.find(`#${sliderName}-area`);
+            console.log('Made');
+          }
+
+          getAreaId(): string {
+            return this.areaIdSelector.attr('id');
+          }
+        }
+
+        return new AreaSubView( parentBlock );
+      }
+
+      constructor ( parentBlock: JQuery ) {
+        const sliderName: string = `${parentBlock.attr('id')}`;
+        parentBlock.prepend(`<div id=${sliderName}-container class='boltunov-rangeslider'></div>`);
+        this.area = this.areaSubView( parentBlock );  // area - это подкласс области 
+        // this.area.getAreaId();
+        this.pointerIdSelector = `${sliderName}-pointer-one`;
+      }
+
     }
     class Presenter {
 
     }
 
     const model = new Model( sliderOptions );
-    const view = new View (  );
+    const view = new View ( this );
     const presenter = new Presenter (  );
-
+  
     // Это должно быть в презентере. Пока оставлю тут
-    model.getOptions();
+    
 
-    return thisSelector;
+    return this;
   }
 })(jQuery);
