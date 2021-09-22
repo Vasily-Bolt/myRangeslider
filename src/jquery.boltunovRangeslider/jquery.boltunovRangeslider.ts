@@ -1,13 +1,8 @@
+import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} from './interfaces';
+
 (function ($) {
   $.fn.boltunovRangeslider = <any>function( sliderOptions?: object ){ 
-    
 
-    type SliderDirection = 'horizontal' | 'vertical';   // Тип для описания направления ползунка
-
-    interface rangesliderDependenceStyles {   // Зависимые от SliderDirection параметры (от направления)
-      sliderStartIndent: 'left' | 'top';    // Отступ от края ползунка - край зависит от направления 
-      centeringSliderOnArea: 'left' | null; // Для центровки ползунка на слайдере
-    }
     const sliderHorizontalDependencies: rangesliderDependenceStyles = {
       sliderStartIndent : 'left',
       centeringSliderOnArea : null,
@@ -15,20 +10,6 @@
     const sliderVerticalDependencies: rangesliderDependenceStyles = {
       sliderStartIndent : 'top',
       centeringSliderOnArea : 'left',
-    }
-    interface RangesliderStateOptions {
-      momentValue: number;    // Устанавливает текущее значение между minValue и maxValue
-      sliderPointerDirection: rangesliderDependenceStyles; //READONLY или PRIVATE?
-      ptrStartMargin: number;
-      // readonly pointerIdSelector: string;
-      rangesliderType: 'single' | 'range';
-      minValue: number;   // Максимально возможное значение
-      maxValue: number;   // Минимально возможное значение
-      startRange?: number;
-      step: number;
-      signification: string;  // Условное обозначение (единица измерения, если угодно)
-      sliderDirection: SliderDirection;   // Направление ползунка (горизонтальный или вертикальный)
-      // readonly idAreaSelectorId: string;
     }
 
     class Model {
@@ -58,20 +39,20 @@
 
     class View {
       private pointerIdSelector: string;
-      area: object;
-      areaSubView( parentBlock: JQuery ): object {
+      area: SubViewComponent;
+      
+      areaSubView( parentBlock: JQuery ): SubViewComponent {
         class AreaSubView {
-          areaIdSelector: JQuery
+          componentIdSelector: JQuery
           
           constructor( parentBlock: JQuery ) {
             const sliderName: string = `${parentBlock.attr('id')}`;
             parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area' class='boltunov-rangeslider__area'></div>`);
-            this.areaIdSelector = parentBlock.find(`#${sliderName}-area`);
-            console.log('Made');
+            this.componentIdSelector = parentBlock.find(`#${sliderName}-area`);
           }
 
-          getAreaId(): string {
-            return this.areaIdSelector.attr('id');
+          getComponentId(): string {
+            return this.componentIdSelector.attr('id');
           }
         }
 
@@ -82,7 +63,7 @@
         const sliderName: string = `${parentBlock.attr('id')}`;
         parentBlock.prepend(`<div id=${sliderName}-container class='boltunov-rangeslider'></div>`);
         this.area = this.areaSubView( parentBlock );  // area - это подкласс области 
-        // this.area.getAreaId();
+        this.area.getComponentId();
         this.pointerIdSelector = `${sliderName}-pointer-one`;
       }
 
