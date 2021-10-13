@@ -6,7 +6,7 @@ export interface rangesliderDependenceStyles {   // Зависимые от Slid
 }
 
 export interface RangesliderStateOptions {
-  momentValue: number;    // Устанавливает текущее значение между minValue и maxValue
+  momentValue: number;    // Устанавливает текущее значение между minValue и maxValue (range) или просто значение 
   sliderPointerDirection: rangesliderDependenceStyles; //READONLY или PRIVATE?
   ptrStartMargin: number;
   rangesliderType: 'single' | 'range';
@@ -20,5 +20,6 @@ export interface RangesliderStateOptions {
 
 export interface SubViewComponent {
   componentIdSelector: JQuery;
-  getComponentId(): string;
+  getComponentId(): JQuery;
+  renderComponent(options: RangesliderStateOptions): void;
 }
