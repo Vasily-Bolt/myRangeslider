@@ -6,11 +6,10 @@ export interface rangesliderDependenceStyles {   // Зависимые от Slid
 }
 
 export interface RangesliderStateOptions {
-  momentValue: number;    // Устанавливает текущее значение между minValue и maxValue (range) или просто значение 
-  sliderPointerDirection: rangesliderDependenceStyles; //READONLY или PRIVATE?
-  ptrStartMargin: number;
+  _sliderPointerDirection: rangesliderDependenceStyles; //READONLY или PRIVATE?
   rangesliderType: 'single' | 'range';
   minValue: number;   // Максимально возможное значение
+  momentValue: number;    // Устанавливает текущее значение между minValue и maxValue (range) или просто значение 
   maxValue: number;   // Минимально возможное значение
   startRange?: number;
   step: number;

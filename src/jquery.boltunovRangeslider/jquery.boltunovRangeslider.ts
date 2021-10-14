@@ -19,26 +19,31 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
       constructor ( AddonOptions?: object ) {
         this.rangesliderStateOptions = $.extend( {
           momentValue: 62,
-          sliderPointerDirection: sliderHorizontalDependencies,
-          ptrStartMargin: 0,
-          // pointerIdSelector: `${sliderName}-pointer-one`,
+          sliderDirection: 'horizontal' as const,
+          _sliderPointerDirection: undefined,
           rangesliderType: 'single' as const,
           minValue: 0,
           maxValue: 100,
           step : 5,
           signification: '%',
-          sliderDirection: 'horizontal' as const,
-          // idAreaSelectorId: `${sliderName}-area`,
         }, AddonOptions);
+
+        this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 
+          ? sliderVerticalDependencies : sliderHorizontalDependencies;
+        this.rangesliderStateOptions.momentValue = this.momentValueRoundToStep(this.rangesliderStateOptions);
+      }
+
+      momentValueRoundToStep(options: RangesliderStateOptions): number{
+        return Math.round(options.momentValue/options.step) * options.step;
       }
 
       getOptions(): RangesliderStateOptions {
         return this.rangesliderStateOptions;
       }
+
     }
 
     class View {
-      private pointerIdSelector: string;
       area: SubViewComponent;
       pointerEnd: SubViewComponent;
       
@@ -82,7 +87,23 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
             return this.componentIdSelector;
           }
 
+          /**
+           * Пересчет параметра значения в значение отсутпа в % от начальной точки слайдера
+           * @param options 
+           * @returns margin в % от начальной точки
+           */
+          valueToMargin(options: RangesliderStateOptions): number{
+            const rangeValue = options.maxValue - options.minValue;
+            const stepInPercents = rangeValue / 100;
+            return options.momentValue / stepInPercents;
+          }
+
           renderComponent(options: RangesliderStateOptions): void{
+            const leftMargin = this.valueToMargin(options);
+            this.componentIdSelector.css({
+              [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
+              [`${options._sliderPointerDirection.sliderStartIndent}`] : `${leftMargin}%`,
+            })
             // this.componentIdSelector.addClass(`boltunov-rangeslider__area--${options.sliderDirection}`)
           }
         }
@@ -99,7 +120,6 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
         parentBlock.prepend(`<div id=${sliderName}-container class='boltunov-rangeslider'></div>`);
         this.area = this.areaSubView( parentBlock );  // area - это подкласс области 
         this.pointerEnd = this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-end`);
-        this.pointerIdSelector = `${sliderName}-pointer-end`;
       }
 
       /**
@@ -108,6 +128,7 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
        */
       renderComponents(options: RangesliderStateOptions): void {
         this.area.renderComponent(options);
+        this.pointerEnd.renderComponent(options);
       }
 
     }
