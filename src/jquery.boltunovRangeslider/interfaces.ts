@@ -10,6 +10,7 @@ export interface RangesliderStateOptions {
   rangesliderType: 'single' | 'range';
   minValue: number;   // Максимально возможное значение
   momentValue: number;    // Устанавливает текущее значение между minValue и maxValue (range) или просто значение 
+  _percentMarginMomentValue: number; //% от края основываясь на momentValue
   maxValue: number;   // Минимально возможное значение
   startRange?: number;
   step: number;
