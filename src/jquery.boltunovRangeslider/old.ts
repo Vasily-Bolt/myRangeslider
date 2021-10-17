@@ -7,7 +7,7 @@
     type SliderDirection = 'horizontal' | 'vertical';   // Тип для описания направления ползунка
 
     interface SliderState {
-      momentValue: number;    // Устанавливает текущее значение между minValue и maxValue
+      startingValue: number;    // Устанавливает текущее значение между minValue и maxValue
       sliderPointerDirection?: rangesliderDependenceStyles; //READONLY или PRIVATE?
       ptrStartMargin: number;
       readonly pointerIdSelector: string;
@@ -33,7 +33,7 @@
     const rangesliderStateOptions: RangesliderStateOptions = $.extend( {
         rangesliderType: 'single' as const,
         pointerIdSelector: `${sliderName}-pointer-one`,
-        momentValue: 62,
+        startingValue: 62,
         ptrStartMargin: 0,
         minValue: 50,
         maxValue: 100,
@@ -59,7 +59,7 @@
         this.rangesliderStateOptions = $.extend( {
           rangesliderType: 'single' as const,
           pointerIdSelector: `${sliderName}-pointer-one`,
-          momentValue: 62,
+          startingValue: 62,
           ptrStartMargin: 0,
           minValue: 50,
           maxValue: 100,
@@ -74,12 +74,12 @@
         if ( sliderLocalOptions.sliderDirection == 'vertical' ) sliderLocalOptions.sliderPointerDirection = sliderVerticalDependencies;
         if ( sliderLocalOptions.sliderDirection == 'horizontal' ) sliderLocalOptions.sliderPointerDirection = sliderHorizontalDependencies;
 
-        if ( sliderLocalOptions.momentValue < sliderLocalOptions.minValue ) sliderLocalOptions.momentValue = sliderLocalOptions.minValue;
-        else if ( sliderLocalOptions.momentValue > sliderLocalOptions.maxValue )
-          sliderLocalOptions.momentValue = sliderLocalOptions.maxValue;
-          sliderLocalOptions.momentValue = Math.round(sliderLocalOptions.momentValue/sliderLocalOptions.step) * sliderLocalOptions.step;
+        if ( sliderLocalOptions.startingValue < sliderLocalOptions.minValue ) sliderLocalOptions.startingValue = sliderLocalOptions.minValue;
+        else if ( sliderLocalOptions.startingValue > sliderLocalOptions.maxValue )
+          sliderLocalOptions.startingValue = sliderLocalOptions.maxValue;
+          sliderLocalOptions.startingValue = Math.round(sliderLocalOptions.startingValue/sliderLocalOptions.step) * sliderLocalOptions.step;
         const totalSteps = ( sliderLocalOptions.maxValue - sliderLocalOptions.minValue ) / sliderLocalOptions.step;
-        const stepsMade = ( sliderLocalOptions.momentValue - sliderLocalOptions.minValue ) / sliderLocalOptions.step;
+        const stepsMade = ( sliderLocalOptions.startingValue - sliderLocalOptions.minValue ) / sliderLocalOptions.step;
         sliderLocalOptions.ptrStartMargin = ( stepsMade / totalSteps ) * 100;
       }
 
