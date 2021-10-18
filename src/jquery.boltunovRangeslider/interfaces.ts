@@ -7,7 +7,7 @@ interface rangesliderDependenceStyles {   // Зависимые от SliderDirec
 
 
 interface PointerInfo {
-  nowValue: number;
+  endValue: number; // Устанавливает текущее значение между minValue и maxValue (range) или просто значение
   _percentMarginstartingValue: number;
 }
 
@@ -16,7 +16,6 @@ interface PointersInfo extends Array<PointerInfo>{}
 interface RangesliderStateOptions {
   _sliderPointerDirection: rangesliderDependenceStyles; //READONLY или PRIVATE?
   rangesliderType: 'single' | 'range';
-  startingValue: number;    // Устанавливает текущее значение между minValue и maxValue (range) или просто значение 
   pointers: PointersInfo;
   minValue: number;   // Максимально возможное значение
   maxValue: number;   // Минимально возможное значение

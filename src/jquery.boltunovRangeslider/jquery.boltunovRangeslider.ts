@@ -13,17 +13,21 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
     }
 
     class Model {
-
+      /**
+       * TODO разбить на две переменные:
+       * 1) Получает данные извне или устанавливает значения по умлочанию
+       * 2) Остальные данные, которыми нельзя манипулировать извне
+       * Объеденить в одну переменную
+       */
       private rangesliderStateOptions: RangesliderStateOptions; 
 
       constructor ( AddonOptions?: object ) {
         this.rangesliderStateOptions = $.extend( {
           pointers: [{
-            nowValue: 62,
+            endValue: 62,
             _percentMarginstartingValue: undefined,
           },
           ],
-          startingValue: 62,
           sliderDirection: 'horizontal' as const,
           _sliderPointerDirection: undefined,
           rangesliderType: 'single' as const,
@@ -35,22 +39,23 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
 
         this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 
           ? sliderVerticalDependencies : sliderHorizontalDependencies;
-        this.rangesliderStateOptions.startingValue = this.startingValueRoundToStep();
+        this.rangesliderStateOptions.pointers[0].endValue = this.startingValueRoundToStep();
         this.rangesliderStateOptions.pointers[0]._percentMarginstartingValue = this.valueToMargin();
       }
 
       /**
       * Пересчет параметра значения в значение отсутпа в % от начальной точки слайдера
       * @returns margin в % от начальной точки
+      * TODO Надо сделать перебор массива для подсчета каждого значения в обеъктах!
       */
       valueToMargin(): number{
         const rangeValue = this.rangesliderStateOptions.maxValue - this.rangesliderStateOptions.minValue;
         const stepInPercents = rangeValue / 100;
-        return this.rangesliderStateOptions.startingValue / stepInPercents;
+        return this.rangesliderStateOptions.pointers[0].endValue / stepInPercents;
       }
 
       startingValueRoundToStep(): number{
-        return Math.round(this.rangesliderStateOptions.startingValue/this.rangesliderStateOptions.step) * this.rangesliderStateOptions.step;
+        return Math.round(this.rangesliderStateOptions.pointers[0].endValue/this.rangesliderStateOptions.step) * this.rangesliderStateOptions.step;
       }
 
       getOptions(): RangesliderStateOptions {
@@ -136,7 +141,7 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
       }
 
       /**
-       * Перерисовка всех суб-компонентов
+       * Первичная отрисовка всех суб-компонентов
        * @param options "Получаем опции компонента из Модели и передаем в эту функцию."
        */
       renderComponents(options: RangesliderStateOptions): void {

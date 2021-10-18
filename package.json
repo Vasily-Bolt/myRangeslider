@@ -24,6 +24,7 @@
     "html-webpack-plugin": "^4.5.0",
     "mini-css-extract-plugin": "^1.1.2",
     "mocha": "^9.1.2",
+    "chai": "^4.3.4",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
     "path": "^0.12.7",
     "sass": "^1.27.1",
@@ -38,6 +39,7 @@
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack --mode development",
+    "test": "mocha './specs/*.spec.js'",
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "watch": "cross-env NODE_ENV=development webpack --mode development --watch",
     "start": "cross-env NODE_ENV=development webpack serve --mode development"
