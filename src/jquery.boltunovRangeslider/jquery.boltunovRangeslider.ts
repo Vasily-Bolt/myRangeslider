@@ -26,6 +26,9 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
           pointers: [{
             endValue: 62,
             _percentMarginstartingValue: undefined,
+          },{
+            endValue: 22,
+            _percentMarginstartingValue: undefined,
           },
           ],
           sliderDirection: 'horizontal' as const,
@@ -39,7 +42,11 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
 
         this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 
           ? sliderVerticalDependencies : sliderHorizontalDependencies;
-        this.rangesliderStateOptions.pointers[0].endValue = this.startingValueRoundToStep();
+        
+        let fixedPointersValues = this.rangesliderStateOptions.pointers.map( (obj) => {
+
+        });
+        this.rangesliderStateOptions.pointers[0].endValue = this.pointerValueRoundToStep(this.rangesliderStateOptions.pointers[0].endValue);
         this.rangesliderStateOptions.pointers[0]._percentMarginstartingValue = this.valueToMargin();
       }
 
@@ -54,8 +61,12 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
         return this.rangesliderStateOptions.pointers[0].endValue / stepInPercents;
       }
 
-      startingValueRoundToStep(): number{
-        return Math.round(this.rangesliderStateOptions.pointers[0].endValue/this.rangesliderStateOptions.step) * this.rangesliderStateOptions.step;
+      TwopointerValueRoundToStep(array: number): number{
+        return 1;
+      }
+
+      pointerValueRoundToStep(val: number): number{
+        return Math.round(val/this.rangesliderStateOptions.step) * this.rangesliderStateOptions.step;
       }
 
       getOptions(): RangesliderStateOptions {
