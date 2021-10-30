@@ -175,7 +175,6 @@ import {rangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
   
     // Это должно быть в презентере. Пока оставлю тут
     
-
     return this;
   }
 })(jQuery);
