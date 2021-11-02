@@ -1,19 +1,18 @@
-let exp = require('chai').expect;
-let path = require('path');
-let object = require(`../jquery.boltunovRangeslider/functions.ts`);
+const chaiExpect = require('chai').expect;
+const someModule = require('../jquery.boltunovRangeslider/functions.ts');
 
-console.log(object);
+// const jsdom = require('mocha-jsdom');
+const jsdomJquery = require('jquery-jsdom');
+const $dom = jsdomJquery("<html><body><p>DOM</p></body></html>").html(); // "DOM"
+let $ = jsdomJquery;
+global.$ = $;
 
-describe('Testing Functions.TS', () => {
 
-	it('"object" should be Object', () => {
-		exp(object).to.be.a('object');
-	});
+console.log($dom);
 
-	describe('Testing object method', () => {
-		it('Method with props "3" and "2" should return "5"', () => {
-			exp(object.method(3,2)).to.equal(5);
-		});
-	});
-
+describe('someModule', function() {
+  it('does stuff', function() {
+    someModule.doStuff();
+    // $('div.some-module').length.should.equal(1);
+  });
 });
