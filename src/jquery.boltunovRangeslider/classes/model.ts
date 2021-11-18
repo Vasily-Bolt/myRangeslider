@@ -40,22 +40,27 @@ class Model {
     this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 
       ? this.sliderVerticalDependencies : this.sliderHorizontalDependencies;
     
-    let fixedPointersValues = this.rangesliderStateOptions.pointers.map( (obj) => {
-
+    const fixedPointersValues = this.rangesliderStateOptions.pointers.map( (obj) => {
+      const rangeValue = this.rangesliderStateOptions.maxValue - this.rangesliderStateOptions.minValue;
+      const newObj = Object.assign({},obj);
+      newObj.endValue = this.pointerValueRoundToStep(obj.endValue);
+      newObj._percentMarginstartingValue = this.valueToMargin(rangeValue, obj.endValue);
+      return newObj;
     });
-    this.rangesliderStateOptions.pointers[0].endValue = this.pointerValueRoundToStep(this.rangesliderStateOptions.pointers[0].endValue);
-    this.rangesliderStateOptions.pointers[0]._percentMarginstartingValue = this.valueToMargin();
+    this.rangesliderStateOptions.pointers = Array.from(fixedPointersValues);
+    // this.rangesliderStateOptions.pointers[0].endValue = this.pointerValueRoundToStep(this.rangesliderStateOptions.pointers[0].endValue);
+    // this.rangesliderStateOptions.pointers[0]._percentMarginstartingValue = this.valueToMargin(
+    //   this.rangesliderStateOptions.maxValue - this.rangesliderStateOptions.minValue, this.rangesliderStateOptions.pointers[0].endValue);
   }
 
   /**
   * Пересчет параметра значения в значение отсутпа в % от начальной точки слайдера
   * @returns margin в % от начальной точки
-  * TODO Надо сделать перебор массива для подсчета каждого значения в обеъктах!
+  * TODO Надо сделать перебор массива для подсчета каждого значения в объектах!
   */
-  valueToMargin(): number{
-    const rangeValue = this.rangesliderStateOptions.maxValue - this.rangesliderStateOptions.minValue;
+  valueToMargin(rangeValue: number, value: number): number{
     const stepInPercents = rangeValue / 100;
-    return this.rangesliderStateOptions.pointers[0].endValue / stepInPercents;
+    return value / stepInPercents;
   }
 
   TwopointerValueRoundToStep(array: number): number{
@@ -66,6 +71,10 @@ class Model {
     return Math.round(val/this.rangesliderStateOptions.step) * this.rangesliderStateOptions.step;
   }
 
+  /*
+    Возвращает опции.
+    ТУДУ - убрать из возвращаемых все с "_"
+  */
   getOptions(): RangesliderStateOptions {
     return this.rangesliderStateOptions;
   }

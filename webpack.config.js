@@ -72,21 +72,6 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: ASSET_PATH
   },
-  // entry: {
-  //   main: './index.js',
-  // },
-  // output: {
-  //   filename: filename('js'),
-  //   path: path.resolve(__dirname, 'dist'),
-  //   publicPath: ASSET_PATH
-  // },
-  // resolve: {
-  //   extensions: ['.js', '.json', '.png'],
-  //   alias: {
-  //     // '@models': path.resolve(__dirname, 'src/models'),
-  //     '@': path.resolve(__dirname, 'src'),
-  //   }
-  // },
   optimization: optimization(),
   devServer: {
     port: 4200,
@@ -103,23 +88,7 @@ module.exports = {
         collapseWhitespace: isProd 
       }
     }),
-    // new HTMLWebpackPlugin( {
-    //   template: './pages/2/indexnot.pug',
-    //   filename: 'indexnot.html',
-    //   inject: true,
-    //   chunks: ['just'],
-    //   minify: {
-    //     collapseWhitespace: isProd 
-    //   }
-    // }),
     new CleanWebpackPlugin(),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     {
-    //       // from: path.resolve(__dirname, 'src/favicon.ico'),
-    //       // to: path.resolve(__dirname, 'dist')
-    //     },
-    // ]}),
     new MiniCssExtractPlugin({
       filename: filename('css')
     }),
