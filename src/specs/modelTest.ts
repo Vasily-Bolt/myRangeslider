@@ -29,7 +29,7 @@ let modelVerticalOptions = {
   },
   ],
   sliderDirection: 'vertical' as const,
-  rangesliderType: 'one-range' as const,
+  rangesliderType: 'range' as const,
   minValue: 100,
   maxValue: 500,
   step : 5,

@@ -39,11 +39,32 @@ describe('Testing Model', ()=>{
           it(`Ending value is ${element.endValue} and must divide by 0 without remain`, ()=>{
             chaiExpect(element.endValue%rangeSlider.step).to.equal(0);
           })
-
         });
       });
     });
 
+    /**
+     * Проверка значения, чтобы не выходило за пределы min/max
+     */
+    describe('Check values to be in min/max interval', ()=>{
+      const rangeSlider = element.getOptions();
+      rangeSlider.pointers.forEach(element => {
+        it(`${element.endValue} is between ${rangeSlider.minValue} and ${rangeSlider.maxValue}`, ()=>{
+          chaiExpect(element.endValue).to.satisfy(()=> element.endValue >= rangeSlider.minValue && element.endValue <=
+           rangeSlider.maxValue)
+        });
+      });
+    });
+
+    /**
+     * Если тип указан range, то количество указателей должно быть четным
+     */
+    describe('If rangesliderType is RANGE, then pointers quantity must be even', ()=>{
+      const rangeSlider = element.getOptions();
+      it(`Pointers quantity is ${rangeSlider.pointers.length} and must be even for RANGE type`, ()=>{
+        chaiExpect(rangeSlider.pointers.length%2).to.equal(0);
+      });
+    });
   });
   
     /**
@@ -60,8 +81,6 @@ describe('Testing Model', ()=>{
       it('min=100, max=300, val=150, margin in % should be 75', ()=>{
         chaiExpect(models[0].valueToMargin(300-100,150)).to.equal(75);
       });
-      it('min=100, max=300, val=50, margin in % should return ERROR', ()=>{
-        chaiExpect(() => models[0].valueToMargin(300-100,50)).to.throw('Value doesn\'t exist in Range' );
-      });      
     });
+
 })
