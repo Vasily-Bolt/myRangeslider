@@ -1,4 +1,4 @@
-import {RangesliderDependenceStyles, RangesliderStateOptions} from '../interfaces';
+import {RangesliderDependenceStyles, RangesliderStateOptions, PointersInfo} from '../interfaces';
 
 class Model {
   private sliderHorizontalDependencies: RangesliderDependenceStyles = {
@@ -90,6 +90,10 @@ class Model {
   */
   getOptions(): RangesliderStateOptions {
     return this.rangesliderStateOptions;
+  }
+
+  getPointers():PointersInfo {
+    return this.rangesliderStateOptions.pointers;
   }
 }
 

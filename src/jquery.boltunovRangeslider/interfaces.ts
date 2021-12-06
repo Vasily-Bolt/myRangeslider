@@ -33,4 +33,4 @@ interface SubViewComponent {
   updateComponent(): void;
 }
 
-export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent}
+export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointersInfo}

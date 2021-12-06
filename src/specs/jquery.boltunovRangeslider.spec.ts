@@ -57,6 +57,21 @@ describe('Testing Model', ()=>{
     });
 
     /**
+     * Получить количество pointers и проверить их значения через метод getPointers 
+     */
+     describe('Check function that get pointers array (qty, values, margin)', ()=>{
+      const rangeSlider = element.getOptions();
+      it(`Pointers quantity must be equal ${rangeSlider.pointers.length}`, ()=>{
+        chaiExpect(element.getPointers().length).to.equal(rangeSlider.pointers.length);
+      });
+      rangeSlider.pointers.forEach((elem, index) => {
+        it(`Pointer ${index} is equal ${elem.endValue}`, ()=>{
+          chaiExpect(element.getPointers()[index].endValue).to.equal(elem.endValue);
+        });
+      });
+    });
+
+    /**
      * Если тип указан range, то количество указателей должно быть четным
      */
     describe('If rangesliderType is RANGE, then pointers quantity must be even', ()=>{
@@ -65,10 +80,11 @@ describe('Testing Model', ()=>{
         chaiExpect(rangeSlider.pointers.length%2).to.equal(0);
       });
     });
+
   });
   
     /**
-     * Проверка правильности конвертиции значения указателя в процент смещения относительно
+     * Проверка правильности конвертации значения указателя в процент смещения относительно
      * начала области слайдера
      */
      describe('Checking value to percent margin convertation', ()=>{
