@@ -84,14 +84,17 @@ class Model {
     return Math.round(val/this.rangesliderStateOptions.step) * this.rangesliderStateOptions.step;
   }
   
-  /*
-    Возвращает опции.
-    TODO - убрать из возвращаемых все с "_"
+  /**
+   * Возвращает опции.
+   * TODO - убрать из возвращаемых все с "_"
   */
   getOptions(): RangesliderStateOptions {
     return this.rangesliderStateOptions;
   }
 
+  /**
+   * Возвращает массив указателей (pointers)
+   */
   getPointers():PointersInfo {
     return this.rangesliderStateOptions.pointers;
   }

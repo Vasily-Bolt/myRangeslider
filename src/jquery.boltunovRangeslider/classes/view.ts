@@ -2,8 +2,7 @@ import {RangesliderStateOptions, SubViewComponent} from '../interfaces';
 
 class View {
   area: SubViewComponent;
-  pointerEnd: SubViewComponent;
-  pointerTwo: SubViewComponent;
+  pointers: Array<SubViewComponent>;
   
   /**
    * Конструктор View. 
@@ -13,8 +12,10 @@ class View {
     const sliderName: string = `${parentBlock.attr('id')}`;
     parentBlock.prepend(`<div id=${sliderName}-container class='boltunov-rangeslider'></div>`);
     this.area = this.areaSubView( parentBlock );  // area - это подкласс области 
-    this.pointerEnd = this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-end`);
-    this.pointerTwo = this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-two`);
+    this.pointers = [
+      this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-end`), 
+      this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-two`)
+    ];
   }
 
   /**
@@ -36,8 +37,8 @@ class View {
         return this.componentIdSelector;
       }
 
-      renderComponent(options: RangesliderStateOptions): void{
-        this.componentIdSelector.addClass(`boltunov-rangeslider__area--${options.sliderDirection}`)
+      renderComponent(name: string): void{
+        this.componentIdSelector.addClass(`boltunov-rangeslider__area--${name}`)
       }
 
       updateComponent(): void{
@@ -61,11 +62,8 @@ class View {
         return this.componentIdSelector;
       }
 
-      renderComponent(options: RangesliderStateOptions): void{
-        this.componentIdSelector.css({
-          [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
-          [`${options._sliderPointerDirection.sliderStartIndent}`] : `${options.pointers[0]._percentMarginstartingValue}%`,
-        })
+      renderComponent(options: string): void{
+        this.componentIdSelector.css(options);
       }
 
       updateComponent(): void{
@@ -82,9 +80,13 @@ class View {
    * @param options "Получаем опции компонента из Модели и передаем в эту функцию."
    */
   renderComponents(options: RangesliderStateOptions): void {
-    this.area.renderComponent(options);
-    this.pointerEnd.renderComponent(options);
-    this.pointerTwo.renderComponent(options);
+    this.area.renderComponent(options.sliderDirection);
+    options.pointers.forEach( (pointer, index) => {
+      this.pointers[index].renderComponent({
+        [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
+        [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginstartingValue}%`,
+      });
+    });
   }
 
 }

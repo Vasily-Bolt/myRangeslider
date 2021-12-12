@@ -10,6 +10,7 @@ import {RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} 
     const view = new View ( this );
     let nowOptions: RangesliderStateOptions = model.getOptions()
     view.renderComponents(nowOptions);
+    console.log( model.getPointers() );
     const presenter = new Presenter (  );
   
     // Это должно быть в презентере. Пока оставлю тут
