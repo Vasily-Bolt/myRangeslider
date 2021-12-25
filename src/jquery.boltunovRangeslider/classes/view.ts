@@ -3,19 +3,16 @@ import {RangesliderStateOptions, SubViewComponent} from '../interfaces';
 class View {
   area: SubViewComponent;
   pointers: Array<SubViewComponent>;
-  
+  sliderName: string;
   /**
    * Конструктор View. 
    * @param parentBlock - блок родитель, внутри которого будет создан rangeslider 
    */
-   constructor ( parentBlock: JQuery ) {
-    const sliderName: string = `${parentBlock.attr('id')}`;
-    parentBlock.prepend(`<div id=${sliderName}-container class='boltunov-rangeslider'></div>`);
+  constructor ( parentBlock: JQuery ) {
+    this.sliderName = `${parentBlock.attr('id')}`;
+    this.pointers = [];
+    parentBlock.prepend(`<div id=${this.sliderName}-container class='boltunov-rangeslider'></div>`);
     this.area = this.areaSubView( parentBlock );  // area - это подкласс области 
-    this.pointers = [
-      this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-end`), 
-      this.pointerSubView(this.area.getComponentId(), `${sliderName}-pointer-two`)
-    ];
   }
 
   /**
@@ -74,6 +71,13 @@ class View {
     return new PointerSubView( parentBlock, pointerName );
   }
 
+  createPointers(length: number): Array<SubViewComponent>{
+    const pointersArray = [];
+    for (let index = 0; index < length; index++){
+      pointersArray[index] = this.pointerSubView(this.area.getComponentId(), `${this.sliderName}-pointer-${index}`);
+    }
+    return pointersArray;
+  }
 
   /**
    * Первичная отрисовка всех суб-компонентов
@@ -81,7 +85,9 @@ class View {
    */
   renderComponents(options: RangesliderStateOptions): void {
     this.area.renderComponent(options.sliderDirection);
+    this.pointers = this.createPointers(options.pointers.length);
     options.pointers.forEach( (pointer, index) => {
+      // this.pointers[index] = this.pointerSubView(this.area.getComponentId(), `${this.sliderName}-pointer-${index}`)
       this.pointers[index].renderComponent({
         [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
         [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginstartingValue}%`,

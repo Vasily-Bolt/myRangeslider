@@ -89,13 +89,25 @@ describe('Testing Model', ()=>{
      */
      describe('Checking value to percent margin convertation', ()=>{
       it('min=0, max=100, val=20, margin in % should be 20', ()=>{
-      chaiExpect(models[0].valueToMargin(100,20)).to.equal(20);
+      chaiExpect(models[0].valueToMargin(20,0,100)).to.equal(20);
       });
       it('min=0, max=500, val=250, margin in % should be 50', ()=>{
-      chaiExpect(models[0].valueToMargin(500,250)).to.equal(50);
+      chaiExpect(models[0].valueToMargin(250,0,500)).to.equal(50);
       });
-      it('min=100, max=300, val=150, margin in % should be 75', ()=>{
-        chaiExpect(models[0].valueToMargin(300-100,150)).to.equal(75);
+      it('min=100, max=300, val=150, margin in % should be 25', ()=>{
+        chaiExpect(models[0].valueToMargin(150,100,300)).to.equal(25);
+      });
+      it('min=200, max=300, val=200, margin in % should be 0', ()=>{
+        chaiExpect(models[0].valueToMargin(200,200,300)).to.equal(0);
+      });
+      it('min=100, max=250, val=250, margin in % should be 100', ()=>{
+        chaiExpect(models[0].valueToMargin(250,100,250)).to.equal(100);
+      });
+      it('min=-100, max=250, val=250, margin in % should be 100', ()=>{
+        chaiExpect(models[0].valueToMargin(-100,250,250)).to.equal(100);
+      });
+      it('min=-500, max=-50, val=-500, margin in % should be 0', ()=>{
+        chaiExpect(models[0].valueToMargin(-500,-50,-500)).to.equal(0);
       });
     });
 
