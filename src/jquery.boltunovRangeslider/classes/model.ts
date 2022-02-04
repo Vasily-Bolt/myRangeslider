@@ -22,10 +22,10 @@ class Model {
     this.rangesliderStateOptions = $.extend( {
       pointers: [{
         endValue: 92,
-        _percentMarginstartingValue: undefined,
+        _percentMarginStartingValue: undefined,
       },{
         endValue: 22,
-        _percentMarginstartingValue: undefined,
+        _percentMarginStartingValue: undefined,
       },
       ],
       sliderDirection: 'horizontal' as const,
@@ -49,7 +49,7 @@ class Model {
       const newObj = Object.assign({},obj);
       newObj.endValue = this.pointerValueRoundToStep(obj.endValue);
       newObj.endValue = this.pointerValueCheckMinMax(this.rangesliderStateOptions.maxValue, this.rangesliderStateOptions.minValue, newObj.endValue);
-      newObj._percentMarginstartingValue = this.valueToMargin(obj.endValue);
+      newObj._percentMarginStartingValue = this.valueToMargin(obj.endValue);
       return newObj;
     });
     this.rangesliderStateOptions.pointers = Array.from(fixedPointersValues);
@@ -60,10 +60,17 @@ class Model {
   * @returns margin в % от начальной точки
   */
   valueToMargin(value: number, minVal?: number, maxVal?: number): number{
+    // if ( value == minVal ) {
+    //   return 0;
+    // }
+    // if ( value == maxVal ) {
+    //   return 100;
+    // }
+    console.log('proceed');
     let minimum = (typeof minVal !== 'undefined') ? minVal : this.rangesliderStateOptions.minValue;
     let maximum = (typeof maxVal !== 'undefined') ? maxVal : this.rangesliderStateOptions.maxValue;
     const stepInPercents = Math.abs((maximum-minimum) / 100);
-    return (value-minimum) / stepInPercents;
+    return Math.round((value-minimum) / stepInPercents);
   }
 
   /**

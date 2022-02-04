@@ -104,11 +104,18 @@ describe('Testing Model', ()=>{
         chaiExpect(models[0].valueToMargin(250,100,250)).to.equal(100);
       });
       it('min=-100, max=250, val=250, margin in % should be 100', ()=>{
-        chaiExpect(models[0].valueToMargin(-100,250,250)).to.equal(100);
+        chaiExpect(models[0].valueToMargin(250,-100,250)).to.equal(100);
       });
       it('min=-500, max=-50, val=-500, margin in % should be 0', ()=>{
-        chaiExpect(models[0].valueToMargin(-500,-50,-500)).to.equal(0);
+        chaiExpect(models[0].valueToMargin(-500,-500,-50)).to.equal(0);
       });
+      it('min=-500, max=-50, val=-50, margin in % should be 100', ()=>{
+        chaiExpect(models[0].valueToMargin(-50,-500,-50)).to.equal(100);
+      });
+      it('min=-550, max=-50, val=-175, margin in % should be 75', ()=>{
+        chaiExpect(models[0].valueToMargin(-175,-550,-50)).to.equal(75);
+      });
+
     });
 
 })
