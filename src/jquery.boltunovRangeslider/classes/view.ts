@@ -90,7 +90,7 @@ class View {
       // this.pointers[index] = this.pointerSubView(this.area.getComponentId(), `${this.sliderName}-pointer-${index}`)
       this.pointers[index].renderComponent({
         [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
-        [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginstartingValue}%`,
+        [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,
       });
     });
   }
