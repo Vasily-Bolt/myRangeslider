@@ -13,7 +13,7 @@ declare global {
 }
 global.$ = $;
 
-import Model from '../jquery.boltunovRangeslider/classes/model';
+import {Model} from '../jquery.boltunovRangeslider/classes/model';
 
 let modelVerticalOptions = {
   pointers: [{
