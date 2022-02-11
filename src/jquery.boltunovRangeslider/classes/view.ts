@@ -61,6 +61,7 @@ class View {
 
       renderComponent(options: string): void{
         this.componentIdSelector.css(options);
+        console.log( this.componentIdSelector.css('left') );
       }
 
       updateComponent(): void{

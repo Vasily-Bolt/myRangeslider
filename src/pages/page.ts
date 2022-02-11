@@ -4,7 +4,7 @@ $( document ).ready(function() {
     popit: 'itpop',
     pointers: [
       {
-        endValue: 35
+        endValue: 20
       },{
         endValue: 50
       },{

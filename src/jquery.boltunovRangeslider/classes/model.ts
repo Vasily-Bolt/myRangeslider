@@ -42,7 +42,6 @@ class Model {
 
     if (this.rangesliderStateOptions.rangesliderType == 'range' && this.rangesliderStateOptions.pointers.length%2 != 0) {
       this.rangesliderStateOptions.pointers.length = this.rangesliderStateOptions.pointers.length-1;
-      console.log('WTF?');
     }
     
     const fixedPointersValues = this.rangesliderStateOptions.pointers.map( (obj) => {
