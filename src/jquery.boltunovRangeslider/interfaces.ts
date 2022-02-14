@@ -24,6 +24,7 @@ interface RangesliderStateOptions {
   step: number;
   signification: string;  // Условное обозначение (единица измерения, если угодно)
   sliderDirection: SliderDirection;   // Направление ползунка (горизонтальный или вертикальный)
+  tip: boolean;
 }
 
 interface SubViewComponent {

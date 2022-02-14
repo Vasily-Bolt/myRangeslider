@@ -51,7 +51,7 @@ class View {
       componentIdSelector: JQuery
       
       constructor( parentBlock: JQuery, pointerName: string ) {
-        parentBlock.append(`<div id='${pointerName}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round'></div>`);
+        parentBlock.append(`<div id='${pointerName}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round'><div class='tip'></div></div>`);
         this.componentIdSelector = parentBlock.find(`#${pointerName}`);
       }
 
@@ -61,11 +61,14 @@ class View {
 
       renderComponent(options: string): void{
         this.componentIdSelector.css(options);
-        console.log( this.componentIdSelector.css('left') );
       }
 
       updateComponent(): void{
 
+      }
+
+      showTip(): void{
+        this.getComponentId().find('.tip').css('display','block')
       }
     }
 
@@ -78,6 +81,14 @@ class View {
       pointersArray[index] = this.pointerSubView(this.area.getComponentId(), `${this.sliderName}-pointer-${index}`);
     }
     return pointersArray;
+  }
+
+  getPointersNodesID(): Array<JQuery>{
+    let pointerNodes: Array<JQuery> = [];
+    this.pointers.forEach((val) => {
+      pointerNodes.push(val.getComponentId());
+    })
+    return pointerNodes;
   }
 
   /**

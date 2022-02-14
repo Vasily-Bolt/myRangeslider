@@ -35,6 +35,7 @@ class Model {
       maxValue: 100,
       step : 5,
       signification: '%',
+      tip : false,
     }, AddonOptions);
 
     this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 

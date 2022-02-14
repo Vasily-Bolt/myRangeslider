@@ -17,8 +17,16 @@ class Presenter {
 
   renderRangeslider(): void{
     let nowOptions: RangesliderStateOptions = this.modelThis.getOptions()
-    console.log(nowOptions);
     this.viewThis.renderComponents(nowOptions);
+  }
+
+  activateListeners(): void{
+    function consoleLocation() {
+      console.log( $(this).css('left') );
+    }
+    this.viewThis.getPointersNodesID().forEach( function (nodePointer) {
+      nodePointer.on('click', consoleLocation );
+    });
   }
 }
 

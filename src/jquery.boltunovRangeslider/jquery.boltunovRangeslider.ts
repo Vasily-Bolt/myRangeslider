@@ -6,7 +6,7 @@ import {Presenter} from './classes/presenter';
       options : sliderOptions,
       sliderNode : this,
     } );
-
+    presenter.activateListeners();
     return this;
   }
 })(jQuery);
