@@ -26,7 +26,7 @@ class View {
       
       constructor( parentBlock: JQuery ) {
         const sliderName: string = `${parentBlock.attr('id')}`;
-        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area' class='boltunov-rangeslider__area'></div>`);
+        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area' class='boltunov-rangeslider-area'></div>`);
         this.componentIdSelector = parentBlock.find(`#${sliderName}-area`);
       }
 
@@ -35,7 +35,7 @@ class View {
       }
 
       renderComponent(name: string): void{
-        this.componentIdSelector.addClass(`boltunov-rangeslider__area--${name}`)
+        this.componentIdSelector.addClass(`boltunov-rangeslider-area--${name}`)
       }
 
       updateComponent(): void{
@@ -51,7 +51,8 @@ class View {
       componentIdSelector: JQuery
       
       constructor( parentBlock: JQuery, pointerName: string ) {
-        parentBlock.append(`<div id='${pointerName}' class='boltunov-rangeslider__pointer boltunov-rangeslider__pointer--round'><div class='tip'></div></div>`);
+        parentBlock.append(`<div id='${pointerName}' class='boltunov-rangeslider-pointer boltunov-rangeslider-pointer--round'>
+          <div class='boltunov-rangeslider-pointer__tip'></div></div>`);
         this.componentIdSelector = parentBlock.find(`#${pointerName}`);
       }
 
@@ -67,14 +68,19 @@ class View {
 
       }
 
-      showTip(): void{
-        this.getComponentId().find('.tip').css('display','block')
-      }
+      // showTip(): void{
+      //   this.getComponentId().find('.boltunov-rangeslider-pointer__tip').css('display','block')
+      // }
     }
 
     return new PointerSubView( parentBlock, pointerName );
   }
 
+  /**
+   * Добавляет указатели в HTML разметку
+   * @param length количество указателей
+   * @returns массив классов указателей
+   */
   createPointers(length: number): Array<SubViewComponent>{
     const pointersArray = [];
     for (let index = 0; index < length; index++){
@@ -87,8 +93,24 @@ class View {
     let pointerNodes: Array<JQuery> = [];
     this.pointers.forEach((val) => {
       pointerNodes.push(val.getComponentId());
-    })
+    });
     return pointerNodes;
+  }
+
+  /**
+   * Переключает видимость подсказок над указателями
+   */
+  toggleTips(): void{
+    this.pointers.forEach((pointer) => {
+      let pointerTipNode:JQuery = pointer.getComponentId().find('.boltunov-rangeslider-pointer__tip');
+      if ( pointerTipNode.css('display') === 'none'){
+        pointerTipNode.css('display','block');
+      }
+      else {
+        pointerTipNode.css('display','none');
+      }
+      
+    });
   }
 
   /**

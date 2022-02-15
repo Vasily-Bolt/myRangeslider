@@ -27,6 +27,16 @@ class Presenter {
     this.viewThis.getPointersNodesID().forEach( function (nodePointer) {
       nodePointer.on('click', consoleLocation );
     });
+
+    /**
+     * Проверка появления подсказок по клику
+     */
+    this.viewThis.getPointersNodesID().forEach( (nodePointer) => {
+      nodePointer.on('click', () => {
+        this.viewThis.toggleTips();
+      });
+      
+    });
   }
 }
 
