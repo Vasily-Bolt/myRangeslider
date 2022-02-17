@@ -7,7 +7,7 @@ class Presenter {
   private viewThis;
 
   constructor ( contructorOptions : {
-    options?: object,
+    options?: Object,
     sliderNode: JQuery
   }){
     this.modelThis = new Model( contructorOptions.options );
@@ -18,6 +18,15 @@ class Presenter {
   renderRangeslider(): void{
     let nowOptions: RangesliderStateOptions = this.modelThis.getOptions()
     this.viewThis.renderComponents(nowOptions);
+  }
+
+  updateRangeslider(): void{
+    this.modelThis.setVerticalDirection();
+    console.log('UPDATING');
+    let newOptions: RangesliderStateOptions = this.modelThis.getOptions();
+    this.viewThis.area.updateComponent(newOptions.sliderDirection);
+    this.viewThis.UpdatePointers(newOptions);
+    console.log('DONE');
   }
 
   activateListeners(): void{

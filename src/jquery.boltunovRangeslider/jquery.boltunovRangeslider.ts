@@ -7,6 +7,9 @@ import {Presenter} from './classes/presenter';
       sliderNode : this,
     } );
     presenter.activateListeners();
+    setTimeout(() => {
+      presenter.updateRangeslider();
+    }, 1000);
     return this;
   }
 })(jQuery);

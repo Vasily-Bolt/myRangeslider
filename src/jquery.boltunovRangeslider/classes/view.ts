@@ -23,11 +23,14 @@ class View {
   areaSubView( parentBlock: JQuery ): SubViewComponent {
     class AreaSubView {
       componentIdSelector: JQuery
+      htmlStartingClasses: string
       
       constructor( parentBlock: JQuery ) {
         const sliderName: string = `${parentBlock.attr('id')}`;
-        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area' class='boltunov-rangeslider-area'></div>`);
+        this.htmlStartingClasses = `boltunov-rangeslider-area`;
+        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area'</div>`);
         this.componentIdSelector = parentBlock.find(`#${sliderName}-area`);
+        this.componentIdSelector.addClass(this.htmlStartingClasses);
       }
 
       getComponentId(): JQuery{
@@ -38,8 +41,9 @@ class View {
         this.componentIdSelector.addClass(`boltunov-rangeslider-area--${name}`)
       }
 
-      updateComponent(): void{
-        
+      updateComponent(options: string): void{
+        this.componentIdSelector.removeClass();
+        this.componentIdSelector.addClass(`${this.htmlStartingClasses} boltunov-rangeslider-area--${options}`)
       }
     }
 
@@ -64,11 +68,12 @@ class View {
         this.componentIdSelector.css(options);
       }
 
-      updateComponent(): void{
-      }
-
       setTipValue(value: number): void{
         this.componentIdSelector.find('div[class*=__tip]').text(value);
+      }
+
+      updateComponent(options: string): void{
+        this.componentIdSelector.css(options);
       }
 
     }
@@ -112,15 +117,24 @@ class View {
     });
   }
 
+  UpdatePointers(options: RangesliderStateOptions ): void{
+    options.pointers.forEach( (pointer, index) => {
+      this.pointers[index].updateComponent({
+        [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
+        [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,
+      });
+      this.pointers[index].setTipValue(options.pointers[index].endValue);
+    });
+  }
+
   /**
    * Первичная отрисовка всех суб-компонентов
-   * @param options "Получаем опции компонента из Модели и передаем в эту функцию."
+   * @param options "Опции для рендеринга (направление слайдера, кол-во поинтеров, их позиции)."
    */
-  renderComponents(options: RangesliderStateOptions): void {
+  renderComponents(options: RangesliderStateOptions): void{
     this.area.renderComponent(options.sliderDirection);
     this.pointers = this.createPointers(options.pointers.length);
     options.pointers.forEach( (pointer, index) => {
-      // this.pointers[index] = this.pointerSubView(this.area.getComponentId(), `${this.sliderName}-pointer-${index}`)
       this.pointers[index].renderComponent({
         [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
         [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,

@@ -101,6 +101,10 @@ class Model {
   getPointers():PointersInfo {
     return this.rangesliderStateOptions.pointers;
   }
+
+  setVerticalDirection(): void{
+    this.rangesliderStateOptions.sliderDirection = 'vertical';
+  }
 }
 
 export {Model}

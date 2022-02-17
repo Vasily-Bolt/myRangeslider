@@ -30,8 +30,8 @@ interface RangesliderStateOptions {
 interface SubViewComponent {
   componentIdSelector: JQuery;
   getComponentId(): JQuery;
-  renderComponent(cssOptions?: Object, name?: string): void;
-  updateComponent(data: RangesliderStateOptions): void;
+  renderComponent(options?: Object|string): void;
+  updateComponent(options: Object|string): void;
 }
 
 interface PointerSubViewComponent extends SubViewComponent {
