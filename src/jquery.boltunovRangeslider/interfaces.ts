@@ -31,7 +31,11 @@ interface SubViewComponent {
   componentIdSelector: JQuery;
   getComponentId(): JQuery;
   renderComponent(cssOptions?: Object, name?: string): void;
-  updateComponent(): void;
+  updateComponent(data: RangesliderStateOptions): void;
 }
 
-export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointersInfo}
+interface PointerSubViewComponent extends SubViewComponent {
+  setTipValue(value: number): void;
+}
+
+export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, PointersInfo}

@@ -1,8 +1,8 @@
-import {RangesliderStateOptions, SubViewComponent} from '../interfaces';
+import {RangesliderStateOptions, SubViewComponent, PointerSubViewComponent} from '../interfaces';
 
 class View {
   area: SubViewComponent;
-  pointers: Array<SubViewComponent>;
+  pointers: Array<PointerSubViewComponent>;
   sliderName: string;
   /**
    * Конструктор View. 
@@ -46,7 +46,7 @@ class View {
     return new AreaSubView( parentBlock );
   }
 
-  pointerSubView(parentBlock: JQuery, pointerName: string): SubViewComponent {
+  pointerSubView(parentBlock: JQuery, pointerName: string): PointerSubViewComponent {
     class PointerSubView {
       componentIdSelector: JQuery
       
@@ -65,12 +65,12 @@ class View {
       }
 
       updateComponent(): void{
-
       }
 
-      // showTip(): void{
-      //   this.getComponentId().find('.boltunov-rangeslider-pointer__tip').css('display','block')
-      // }
+      setTipValue(value: number): void{
+        this.componentIdSelector.find('div[class*=__tip]').text(value);
+      }
+
     }
 
     return new PointerSubView( parentBlock, pointerName );
@@ -81,7 +81,7 @@ class View {
    * @param length количество указателей
    * @returns массив классов указателей
    */
-  createPointers(length: number): Array<SubViewComponent>{
+  createPointers(length: number): Array<PointerSubViewComponent>{
     const pointersArray = [];
     for (let index = 0; index < length; index++){
       pointersArray[index] = this.pointerSubView(this.area.getComponentId(), `${this.sliderName}-pointer-${index}`);
@@ -109,7 +109,6 @@ class View {
       else {
         pointerTipNode.css('display','none');
       }
-      
     });
   }
 
@@ -126,6 +125,7 @@ class View {
         [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
         [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,
       });
+      this.pointers[index].setTipValue(options.pointers[index].endValue);
     });
   }
 
