@@ -1,14 +1,14 @@
-import {RangesliderDependenceStyles, RangesliderStateOptions, PointersInfo} from '../interfaces';
+import {RangesliderDependenceStyles, RangesliderStateOptions, PointersInfo, SliderDirection} from '../interfaces';
 
 class Model {
-  private sliderHorizontalDependencies: RangesliderDependenceStyles = {
-    sliderStartIndent : 'left',
-    centeringSliderOnArea : null,
-  }
-  private sliderVerticalDependencies: RangesliderDependenceStyles = {
-    sliderStartIndent : 'top',
-    centeringSliderOnArea : 'left',
-  }
+  // private sliderHorizontalDependencies: RangesliderDependenceStyles = {
+  //   sliderStartIndent : 'left',
+  //   centeringSliderOnArea : null,
+  // }
+  // private sliderVerticalDependencies: RangesliderDependenceStyles = {
+  //   sliderStartIndent : 'top',
+  //   centeringSliderOnArea : 'left',
+  // }
 
   /**
    * TODO разбить на две переменные:
@@ -38,8 +38,9 @@ class Model {
       tip : false,
     }, AddonOptions);
 
-    this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 
-      ? this.sliderVerticalDependencies : this.sliderHorizontalDependencies;
+    this.rangesliderStateOptions._sliderPointerDirection = this.setPointersDirectionDependencies(this.rangesliderStateOptions.sliderDirection);
+    // this.rangesliderStateOptions._sliderPointerDirection = this.rangesliderStateOptions.sliderDirection === 'vertical' 
+    //   ? this.sliderVerticalDependencies : this.sliderHorizontalDependencies;
 
     if (this.rangesliderStateOptions.rangesliderType == 'range' && this.rangesliderStateOptions.pointers.length%2 != 0) {
       this.rangesliderStateOptions.pointers.length = this.rangesliderStateOptions.pointers.length-1;
@@ -54,6 +55,31 @@ class Model {
       return newObj;
     });
     this.rangesliderStateOptions.pointers = Array.from(fixedPointersValues);
+  }
+
+  /**
+   * Устанавливает значения для стилей указателей в зависимости от направления слайдера
+   * @param sliderDirection направление слайдера
+   * @returns стили согласно интерфейсу
+   */
+  setPointersDirectionDependencies(sliderDirection: SliderDirection): RangesliderDependenceStyles{
+    const sliderHorizontalDependencies: RangesliderDependenceStyles = {
+      sliderStartIndent : 'left',
+      centeringSliderOnArea : null,
+    }
+    const sliderVerticalDependencies: RangesliderDependenceStyles = {
+      sliderStartIndent : 'top',
+      centeringSliderOnArea : 'left',
+    }
+  
+    let pointersInfo: RangesliderDependenceStyles;
+    pointersInfo = sliderDirection === 'vertical' ? sliderVerticalDependencies : sliderHorizontalDependencies;
+
+    return pointersInfo;
+  }
+
+  updatePointerDirectionDependencies(): void{
+    this.rangesliderStateOptions._sliderPointerDirection = this.setPointersDirectionDependencies(this.rangesliderStateOptions.sliderDirection);
   }
 
   /**

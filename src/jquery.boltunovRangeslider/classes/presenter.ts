@@ -22,6 +22,7 @@ class Presenter {
 
   updateRangeslider(): void{
     this.modelThis.setVerticalDirection();
+    this.modelThis.updatePointerDirectionDependencies();
     console.log('UPDATING');
     let newOptions: RangesliderStateOptions = this.modelThis.getOptions();
     this.viewThis.area.updateComponent(newOptions.sliderDirection);

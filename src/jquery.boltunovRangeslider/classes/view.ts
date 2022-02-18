@@ -119,9 +119,11 @@ class View {
 
   UpdatePointers(options: RangesliderStateOptions ): void{
     options.pointers.forEach( (pointer, index) => {
+      let pointerNodeWidth = $(this.pointers[index].getComponentId()).width();
       this.pointers[index].updateComponent({
         [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
         [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,
+        [`margin-${options._sliderPointerDirection.sliderStartIndent}`] : `-${pointerNodeWidth/2}px`,
       });
       this.pointers[index].setTipValue(options.pointers[index].endValue);
     });
