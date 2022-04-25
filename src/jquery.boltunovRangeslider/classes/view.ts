@@ -73,6 +73,7 @@ class View {
       }
 
       updateComponent(options: string): void{
+        this.componentIdSelector.removeAttr('style');
         this.componentIdSelector.css(options);
       }
 
@@ -137,9 +138,11 @@ class View {
     this.area.renderComponent(options.sliderDirection);
     this.pointers = this.createPointers(options.pointers.length);
     options.pointers.forEach( (pointer, index) => {
+      let pointerNodeWidth = $(this.pointers[index].getComponentId()).width();
       this.pointers[index].renderComponent({
         [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
         [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,
+        [`margin-${options._sliderPointerDirection.sliderStartIndent}`] : `-${pointerNodeWidth/2}px`,
       });
       this.pointers[index].setTipValue(options.pointers[index].endValue);
     });

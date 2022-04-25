@@ -9,7 +9,7 @@ import {Presenter} from './classes/presenter';
     presenter.activateListeners();
     setTimeout(() => {
       presenter.updateRangeslider();
-    }, 1000);
+    }, 3000);
     return this;
   }
 })(jQuery);
