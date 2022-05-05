@@ -13,7 +13,8 @@ $( document ).ready(function() {
       // {
       //   endValue: 77
       // }
-    ]
+    ],
+    showPanel: true,
     // sliderDirection : 'vertical',
   });
 });

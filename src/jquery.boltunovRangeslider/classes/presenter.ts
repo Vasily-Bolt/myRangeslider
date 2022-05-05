@@ -28,6 +28,20 @@ class Presenter {
     this.viewThis.area.updateComponent(newOptions.sliderDirection);
     this.viewThis.UpdatePointers(newOptions);
     console.log('DONE');
+
+    setTimeout(() => {
+      this.modelThis.setHorizontalDirection();
+      this.modelThis.updatePointerDirectionDependencies();
+      console.log('UPDATING');
+      let newOptions: RangesliderStateOptions = this.modelThis.getOptions();
+      this.viewThis.area.updateComponent(newOptions.sliderDirection);
+      this.viewThis.UpdatePointers(newOptions);
+      console.log('DONE');
+      this.viewThis.showCPanel();
+        
+    }, 3000);
+
+
   }
 
   activateListeners(): void{

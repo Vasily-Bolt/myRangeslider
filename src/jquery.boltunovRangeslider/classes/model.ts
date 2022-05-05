@@ -36,6 +36,7 @@ class Model {
       step : 5,
       signification: '%',
       tip : false,
+      showPanel: false,
     }, AddonOptions);
 
     this.rangesliderStateOptions._sliderPointerDirection = this.setPointersDirectionDependencies(this.rangesliderStateOptions.sliderDirection);
@@ -130,6 +131,10 @@ class Model {
 
   setVerticalDirection(): void{
     this.rangesliderStateOptions.sliderDirection = 'vertical';
+  }
+
+  setHorizontalDirection(): void{
+    this.rangesliderStateOptions.sliderDirection = 'horizontal';
   }
 }
 

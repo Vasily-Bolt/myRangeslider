@@ -3,6 +3,7 @@ import {RangesliderStateOptions, SubViewComponent, PointerSubViewComponent} from
 class View {
   area: SubViewComponent;
   pointers: Array<PointerSubViewComponent>;
+  cPanel: SubViewComponent;
   sliderName: string;
   /**
    * Конструктор View. 
@@ -12,7 +13,9 @@ class View {
     this.sliderName = `${parentBlock.attr('id')}`;
     this.pointers = [];
     parentBlock.prepend(`<div id=${this.sliderName}-container class='boltunov-rangeslider'></div>`);
-    this.area = this.areaSubView( parentBlock );  // area - это подкласс области 
+    this.area = this.areaSubView( parentBlock );  // area - это подкласс области
+    this.cPanel = this.cPanelSubView( parentBlock );
+
   }
 
   /**
@@ -27,8 +30,8 @@ class View {
       
       constructor( parentBlock: JQuery ) {
         const sliderName: string = `${parentBlock.attr('id')}`;
-        this.htmlStartingClasses = `boltunov-rangeslider-area`;
-        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area'</div>`);
+        this.htmlStartingClasses = `boltunov-rangeslider__area`;
+        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-area'></div>`);
         this.componentIdSelector = parentBlock.find(`#${sliderName}-area`);
         this.componentIdSelector.addClass(this.htmlStartingClasses);
       }
@@ -38,12 +41,12 @@ class View {
       }
 
       renderComponent(name: string): void{
-        this.componentIdSelector.addClass(`boltunov-rangeslider-area--${name}`)
+        this.componentIdSelector.addClass(`boltunov-rangeslider__area--${name}`)
       }
 
       updateComponent(options: string): void{
         this.componentIdSelector.removeClass();
-        this.componentIdSelector.addClass(`${this.htmlStartingClasses} boltunov-rangeslider-area--${options}`)
+        this.componentIdSelector.addClass(`${this.htmlStartingClasses} boltunov-rangeslider__area--${options}`)
       }
     }
 
@@ -82,6 +85,41 @@ class View {
     return new PointerSubView( parentBlock, pointerName );
   }
 
+  cPanelSubView( parentBlock: JQuery ): SubViewComponent {
+    class CPanelSubView {
+      componentIdSelector: JQuery;
+      constructor( parentBlock: JQuery ) {
+        const sliderName: string = `${parentBlock.attr('id')}`;
+        parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-CPanel' class='boltunov-rangeslider__control-panel'>
+          <p>ABRA
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </p>
+          
+          </div>`);
+        this.componentIdSelector = parentBlock.find(`#${sliderName}-CPanel`);
+      }
+
+      getComponentId(): JQuery{
+        return this.componentIdSelector;
+      }
+
+      renderComponent(options: string): void{
+        if ( !options ) this.componentIdSelector.css('display','none');
+        else this.componentIdSelector.css('display','block');
+      }
+
+      updateComponent(options: string): void{
+        this.componentIdSelector.removeAttr('style');
+        this.componentIdSelector.css(options);
+      }
+
+    }
+    return new CPanelSubView( parentBlock );
+  }
+
   /**
    * Добавляет указатели в HTML разметку
    * @param length количество указателей
@@ -103,21 +141,6 @@ class View {
     return pointerNodes;
   }
 
-  /**
-   * Переключает видимость подсказок над указателями
-   */
-  toggleTips(): void{
-    this.pointers.forEach((pointer) => {
-      let pointerTipNode:JQuery = pointer.getComponentId().find('.boltunov-rangeslider-pointer__tip');
-      if ( pointerTipNode.css('display') === 'none'){
-        pointerTipNode.css('display','block');
-      }
-      else {
-        pointerTipNode.css('display','none');
-      }
-    });
-  }
-
   UpdatePointers(options: RangesliderStateOptions ): void{
     options.pointers.forEach( (pointer, index) => {
       let pointerNodeWidth = $(this.pointers[index].getComponentId()).width();
@@ -131,11 +154,35 @@ class View {
   }
 
   /**
+   * Переключает видимость подсказок над указателями
+   */
+   toggleTips(): void{
+    this.pointers.forEach((pointer) => {
+      let pointerTipNode:JQuery = pointer.getComponentId().find('.boltunov-rangeslider-pointer__tip');
+      if ( pointerTipNode.css('display') === 'none'){
+        pointerTipNode.css('display','block');
+      }
+      else {
+        pointerTipNode.css('display','none');
+      }
+    });
+  }
+
+  /**
+   * Ниже работа с панелью управления
+   */
+  showCPanel (): void {
+    this.cPanel.updateComponent({'display' : 'block'});
+    console.log('show CPanel');
+  }
+
+  /**
    * Первичная отрисовка всех суб-компонентов
    * @param options "Опции для рендеринга (направление слайдера, кол-во поинтеров, их позиции)."
    */
   renderComponents(options: RangesliderStateOptions): void{
     this.area.renderComponent(options.sliderDirection);
+    this.cPanel.renderComponent(options.showPanel);
     this.pointers = this.createPointers(options.pointers.length);
     options.pointers.forEach( (pointer, index) => {
       let pointerNodeWidth = $(this.pointers[index].getComponentId()).width();

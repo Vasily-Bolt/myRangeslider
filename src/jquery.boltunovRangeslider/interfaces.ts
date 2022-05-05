@@ -25,6 +25,7 @@ interface RangesliderStateOptions {
   signification: string;  // Условное обозначение (единица измерения, если угодно)
   sliderDirection: SliderDirection;   // Направление ползунка (горизонтальный или вертикальный)
   tip: boolean; //Показ подсказок
+  showPanel: boolean; //Показ панели управления
 }
 
 interface SubViewComponent {
