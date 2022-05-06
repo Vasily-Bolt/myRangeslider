@@ -85,28 +85,36 @@ class View {
     return new PointerSubView( parentBlock, pointerName );
   }
 
-  cPanelSubView( parentBlock: JQuery ): SubViewComponent {
+  cPanelSubView( parentBlock: JQuery): SubViewComponent {
     class CPanelSubView {
       componentIdSelector: JQuery;
       constructor( parentBlock: JQuery ) {
         const sliderName: string = `${parentBlock.attr('id')}`;
         parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-CPanel' class='boltunov-rangeslider__control-panel'>
-          <p>ABRA
+          </div>`);
+        this.componentIdSelector = parentBlock.find(`#${sliderName}-CPanel`);
+        this.componentIdSelector.append(`
+          <p id='${sliderName}-vertical'>
             <label class="switch">
               <input type="checkbox" checked>
               <span class="slider"></span>
             </label>
+            Vertical/Horizontal
           </p>
-          
-          </div>`);
-        this.componentIdSelector = parentBlock.find(`#${sliderName}-CPanel`);
+          <p id='${sliderName}-MIN'>
+            <label class="input">
+              <input type="text" value="123">
+            </label>
+            Min
+          </p>
+        `);
       }
 
       getComponentId(): JQuery{
         return this.componentIdSelector;
       }
 
-      renderComponent(options: string): void{
+      renderComponent(options: boolean): void{
         if ( !options ) this.componentIdSelector.css('display','none');
         else this.componentIdSelector.css('display','block');
       }
@@ -173,7 +181,10 @@ class View {
    */
   showCPanel (): void {
     this.cPanel.updateComponent({'display' : 'block'});
-    console.log('show CPanel');
+  }
+
+  hideCPanel (): void {
+    this.cPanel.updateComponent({'display' : 'none'});
   }
 
   /**
