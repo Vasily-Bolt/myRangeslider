@@ -129,10 +129,12 @@ class Model {
 
   setVerticalDirection(): void{
     this.rangesliderStateOptions.sliderDirection = 'vertical';
+    this.updatePointerDirectionDependencies();
   }
 
   setHorizontalDirection(): void{
     this.rangesliderStateOptions.sliderDirection = 'horizontal';
+    this.updatePointerDirectionDependencies();
   }
 }
 

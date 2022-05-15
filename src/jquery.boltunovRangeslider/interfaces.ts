@@ -41,6 +41,7 @@ interface PointerSubViewComponent extends SubViewComponent {
 
 const rangesliderEvents = {
   tips : 'tipsToggle',
+  direction : 'directionToggle',
 }
 
 export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, PointersInfo, rangesliderEvents}

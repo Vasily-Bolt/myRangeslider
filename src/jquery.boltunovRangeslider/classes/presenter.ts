@@ -1,6 +1,7 @@
 import {Model} from './model';
 import {View} from './view';
 import {RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, rangesliderEvents} from '../interfaces';
+import { timers } from 'jquery';
 
 class Presenter {
   private modelThis;
@@ -32,15 +33,19 @@ class Presenter {
       this.viewThis.toggleTips();
     } );
 
-    /**
-     * Проверка появления подсказок по клику
-     */
-    this.viewThis.getPointersNodesID().forEach( (nodePointer) => {
-      nodePointer.on('click', () => {
-        this.viewThis.toggleTips();
-      });
+    $(this.node).on(rangesliderEvents.direction, ()=> {
+      if (this.modelThis.getOptions().sliderDirection == 'horizontal') {
+        this.modelThis.setVerticalDirection();
+      } else {
+        this.modelThis.setHorizontalDirection();
+      }
+      const updatedOptions = this.modelThis.getOptions();
+      this.viewThis.area.updateComponent(updatedOptions.sliderDirection);
+      this.viewThis.UpdatePointers(updatedOptions);
+
+
+    } );
       
-    });
   }
 }
 

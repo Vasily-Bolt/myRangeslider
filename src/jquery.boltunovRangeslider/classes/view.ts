@@ -141,12 +141,16 @@ class View {
 
       activateListeners(): void{
         const tipsToggleEvent = new Event(rangesliderEvents.tips,{bubbles:true});
+        const directionToggleEvent = new Event(rangesliderEvents.direction,{bubbles:true});
         this.componentIdSelector.find('input').on('click', function() {
           const pIdSplitted = this.closest('p').id.split('-');
           const inputId = pIdSplitted[pIdSplitted.length-1];
           switch (inputId) {
             case 'tipsToggle' : 
               this.dispatchEvent(tipsToggleEvent);
+              break;
+            case 'direction' :
+              this.dispatchEvent(directionToggleEvent);
               break;
           }
         })
