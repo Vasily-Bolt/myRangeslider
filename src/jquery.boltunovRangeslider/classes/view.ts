@@ -1,4 +1,4 @@
-import {RangesliderStateOptions, SubViewComponent, PointerSubViewComponent} from '../interfaces';
+import {RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, rangesliderEvents} from '../interfaces';
 
 class View {
   area: SubViewComponent;
@@ -94,7 +94,7 @@ class View {
           </div>`);
         this.componentIdSelector = parentBlock.find(`#${sliderName}-CPanel`);
         this.componentIdSelector.append(`
-          <p id='${sliderName}-vertical'>
+          <p id='${sliderName}-direction'>
             <label class="switch">
               <input type="checkbox" checked>
               <span class="slider"></span>
@@ -103,9 +103,34 @@ class View {
           </p>
           <p id='${sliderName}-MIN'>
             <label class="input">
-              <input type="text" value="123">
+              <input type="text" value="">
             </label>
             Min
+          </p>
+          <p id='${sliderName}-MAX'>
+            <label class="input">
+              <input type="text" value="">
+            </label>
+            Max
+          </p>
+          <p id='${sliderName}-rangeOrSingle'>
+            <label class="input">
+              <input type="text" value="">
+            </label>
+            Singe/Range
+          </p>
+          <p id='${sliderName}-rangeOrSingle'>
+            <label class="input">
+              <input type="text" value="">
+            </label>
+            Singe/Range
+          </p>
+          <p id='${sliderName}-tipsToggle'>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+            Toggle Tips
           </p>
         `);
       }
@@ -114,8 +139,22 @@ class View {
         return this.componentIdSelector;
       }
 
-      renderComponent(options: boolean): void{
-        if ( !options ) this.componentIdSelector.css('display','none');
+      activateListeners(): void{
+        const tipsToggleEvent = new Event(rangesliderEvents.tips,{bubbles:true});
+        this.componentIdSelector.find('input').on('click', function() {
+          const pIdSplitted = this.closest('p').id.split('-');
+          const inputId = pIdSplitted[pIdSplitted.length-1];
+          switch (inputId) {
+            case 'tipsToggle' : 
+              this.dispatchEvent(tipsToggleEvent);
+              break;
+          }
+        })
+      }
+
+      renderComponent(options: RangesliderStateOptions): void{
+        this.activateListeners();
+        if ( !options.showPanel ) this.componentIdSelector.css('display','none');
         else this.componentIdSelector.css('display','block');
       }
 
@@ -193,7 +232,7 @@ class View {
    */
   renderComponents(options: RangesliderStateOptions): void{
     this.area.renderComponent(options.sliderDirection);
-    this.cPanel.renderComponent(options.showPanel);
+    this.cPanel.renderComponent(options);
     this.pointers = this.createPointers(options.pointers.length);
     options.pointers.forEach( (pointer, index) => {
       let pointerNodeWidth = $(this.pointers[index].getComponentId()).width();

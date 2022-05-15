@@ -39,4 +39,8 @@ interface PointerSubViewComponent extends SubViewComponent {
   setTipValue(value: number): void;
 }
 
-export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, PointersInfo}
+const rangesliderEvents = {
+  tips : 'tipsToggle',
+}
+
+export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, PointersInfo, rangesliderEvents}

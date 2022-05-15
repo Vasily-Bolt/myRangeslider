@@ -1,17 +1,17 @@
-const jsdomJquery = require('jquery-jsdom');
-let $ = jsdomJquery;
+// const jsdomJquery = require('jquery-jsdom');
+// let $ = jsdomJquery;
 
-/*
-  Нужно обойтись без изменения глобальной переменной
-*/
-declare global {
-  module NodeJS {
-    interface Global {
-      $: any;
-    }
-  }
-}
-global.$ = $;
+// /*
+//   Нужно обойтись без изменения глобальной переменной
+// */
+// declare global {
+//   module NodeJS {
+//     interface Global {
+//       $: any;
+//     }
+//   }
+// }
+// global.$ = $;
 
 import {Model} from '../jquery.boltunovRangeslider/classes/model';
 

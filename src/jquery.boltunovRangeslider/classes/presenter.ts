@@ -1,15 +1,16 @@
 import {Model} from './model';
 import {View} from './view';
-import {RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent} from '../interfaces';
+import {RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, rangesliderEvents} from '../interfaces';
 
 class Presenter {
   private modelThis;
   private viewThis;
-
+  private node : JQuery;
   constructor ( contructorOptions : {
     options?: Object,
     sliderNode: JQuery
   }){
+    this.node = contructorOptions.sliderNode;
     this.modelThis = new Model( contructorOptions.options );
     this.viewThis = new View ( contructorOptions.sliderNode );
     this.renderRangeslider();
@@ -21,36 +22,15 @@ class Presenter {
   }
 
   updateRangeslider(): void{
-    this.modelThis.setVerticalDirection();
-    this.modelThis.updatePointerDirectionDependencies();
-    console.log('UPDATING');
-    let newOptions: RangesliderStateOptions = this.modelThis.getOptions();
-    this.viewThis.area.updateComponent(newOptions.sliderDirection);
-    this.viewThis.UpdatePointers(newOptions);
-    console.log('DONE');
-
-    setTimeout(() => {
-      this.modelThis.setHorizontalDirection();
-      this.modelThis.updatePointerDirectionDependencies();
-      console.log('UPDATING');
-      let newOptions: RangesliderStateOptions = this.modelThis.getOptions();
-      this.viewThis.area.updateComponent(newOptions.sliderDirection);
-      this.viewThis.UpdatePointers(newOptions);
-      console.log('DONE');
-      this.viewThis.showCPanel();
-        
-    }, 3000);
+    
 
 
   }
 
   activateListeners(): void{
-    function consoleLocation() {
-      console.log( $(this).css('left') );
-    }
-    this.viewThis.getPointersNodesID().forEach( function (nodePointer) {
-      nodePointer.on('click', consoleLocation );
-    });
+    $(this.node).on(rangesliderEvents.tips, ()=> {
+      this.viewThis.toggleTips();
+    } );
 
     /**
      * Проверка появления подсказок по клику
