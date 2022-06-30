@@ -1,9 +1,9 @@
-import {RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, rangesliderEvents} from '../interfaces';
+import {RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, cPanelElementObject, CPanelSubViewComponent} from '../interfaces';
 
 class View {
   area: SubViewComponent;
   pointers: Array<PointerSubViewComponent>;
-  cPanel: SubViewComponent;
+  cPanel: CPanelSubViewComponent;
   sliderName: string;
   /**
    * Конструктор View. 
@@ -85,79 +85,24 @@ class View {
     return new PointerSubView( parentBlock, pointerName );
   }
 
-  cPanelSubView( parentBlock: JQuery): SubViewComponent {
+  cPanelSubView( parentBlock: JQuery): CPanelSubViewComponent {
     class CPanelSubView {
       componentIdSelector: JQuery;
+      cPanelElements : Array<cPanelElementObject>;
       constructor( parentBlock: JQuery ) {
+        this.cPanelElements = [];
         const sliderName: string = `${parentBlock.attr('id')}`;
         parentBlock.children(`#${sliderName}-container`).append(`<div id='${sliderName}-CPanel' class='boltunov-rangeslider__control-panel'>
           </div>`);
         this.componentIdSelector = parentBlock.find(`#${sliderName}-CPanel`);
-        this.componentIdSelector.append(`
-          <p id='${sliderName}-direction'>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider"></span>
-            </label>
-            Vertical/Horizontal
-          </p>
-          <p id='${sliderName}-MIN'>
-            <label class="input">
-              <input type="text" value="">
-            </label>
-            Min
-          </p>
-          <p id='${sliderName}-MAX'>
-            <label class="input">
-              <input type="text" value="">
-            </label>
-            Max
-          </p>
-          <p id='${sliderName}-rangeOrSingle'>
-            <label class="input">
-              <input type="text" value="">
-            </label>
-            Singe/Range
-          </p>
-          <p id='${sliderName}-rangeOrSingle'>
-            <label class="input">
-              <input type="text" value="">
-            </label>
-            Singe/Range
-          </p>
-          <p id='${sliderName}-tipsToggle'>
-            <label class="switch">
-              <input type="checkbox">
-              <span class="slider"></span>
-            </label>
-            Toggle Tips
-          </p>
-        `);
       }
 
       getComponentId(): JQuery{
         return this.componentIdSelector;
       }
 
-      activateListeners(): void{
-        const tipsToggleEvent = new Event(rangesliderEvents.tips,{bubbles:true});
-        const directionToggleEvent = new Event(rangesliderEvents.direction,{bubbles:true});
-        this.componentIdSelector.find('input').on('click', function() {
-          const pIdSplitted = this.closest('p').id.split('-');
-          const inputId = pIdSplitted[pIdSplitted.length-1];
-          switch (inputId) {
-            case 'tipsToggle' : 
-              this.dispatchEvent(tipsToggleEvent);
-              break;
-            case 'direction' :
-              this.dispatchEvent(directionToggleEvent);
-              break;
-          }
-        })
-      }
 
       renderComponent(options: RangesliderStateOptions): void{
-        this.activateListeners();
         if ( !options.showPanel ) this.componentIdSelector.css('display','none');
         else this.componentIdSelector.css('display','block');
       }
@@ -165,6 +110,46 @@ class View {
       updateComponent(options: string): void{
         this.componentIdSelector.removeAttr('style');
         this.componentIdSelector.css(options);
+      }
+
+      /**
+       * Создает новый элемент в панели управления, который генерирует событие для слушателя в presenter
+       * @param options 
+       * @returns Измененный массив компонентов панели управления
+       */
+      addPanelElement( options : cPanelElementObject ): Array<cPanelElementObject> {
+        const directionToggleEvent = new Event(options.event,{bubbles:true});
+        const pId = `${this.componentIdSelector.attr('id')}-${options.name}`;
+        let appendingHTML = `<p id='${pId}'>`;
+        if (options.type === 'checkbox') {
+          appendingHTML += `
+          <label class="switch">
+            <input type="${options.type}" `;
+          if (options.value === true) appendingHTML += `checked`;
+          appendingHTML += `  >
+            <span class="slider"></span>
+          </label>
+          `;
+        }
+        if (options.type === 'input') {
+          appendingHTML += `
+          <label>
+            <input type="text" value="${options.value}">
+          </label>
+          `;
+        }
+        appendingHTML += `
+          ${options.tip}
+        </p>
+        `;
+        this.componentIdSelector.append(`
+          ${appendingHTML}
+        `);
+        this.componentIdSelector.find(`#${pId}`).find('input').on('input', function() {
+          this.dispatchEvent(directionToggleEvent);
+        });
+        this.cPanelElements.push(options);
+        return this.cPanelElements;
       }
 
     }
@@ -228,6 +213,9 @@ class View {
 
   hideCPanel (): void {
     this.cPanel.updateComponent({'display' : 'none'});
+  }
+  addCPanelElement (options: cPanelElementObject): void {
+    this.cPanel.addPanelElement(options);
   }
 
   /**

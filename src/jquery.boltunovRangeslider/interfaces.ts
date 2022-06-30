@@ -39,9 +39,23 @@ interface PointerSubViewComponent extends SubViewComponent {
   setTipValue(value: number): void;
 }
 
+interface CPanelSubViewComponent extends SubViewComponent {
+  addPanelElement(options: cPanelElementObject): Array<cPanelElementObject>;
+}
+
+interface cPanelElementObject {
+  name : string;
+  tip : string;
+  event: string;
+  type : 'checkbox' | 'input';
+  value : false | true | string | number;
+}
+
 const rangesliderEvents = {
   tips : 'tipsToggle',
   direction : 'directionToggle',
+  inputFieldChanged : 'inputChanged',
 }
 
-export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, PointersInfo, rangesliderEvents}
+export { SliderDirection, RangesliderDependenceStyles, RangesliderStateOptions, SubViewComponent, PointerSubViewComponent, PointersInfo, rangesliderEvents,
+  cPanelElementObject, CPanelSubViewComponent}
