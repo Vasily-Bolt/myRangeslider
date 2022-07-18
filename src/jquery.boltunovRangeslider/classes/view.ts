@@ -177,15 +177,26 @@ class View {
     return pointerNodes;
   }
 
+  /**
+   * Обновляет положение одного указателя
+   */
+  pointerUpdate(pointerIndex: number, options: RangesliderStateOptions): void{
+    let pointerNodeWidth = $(this.pointers[pointerIndex].getComponentId()).width();
+    this.pointers[pointerIndex].updateComponent({
+      [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
+      [`${options._sliderPointerDirection.sliderStartIndent}`] : `${options.pointers[pointerIndex]._percentMarginStartingValue}%`,
+      [`margin-${options._sliderPointerDirection.sliderStartIndent}`] : `-${pointerNodeWidth/2}px`,
+    });
+    this.pointers[pointerIndex].setTipValue(options.pointers[pointerIndex].endValue);
+  }
+
+  /**
+   * Обновляет положение всех указателей
+   * @param options 
+   */
   UpdatePointers(options: RangesliderStateOptions ): void{
     options.pointers.forEach( (pointer, index) => {
-      let pointerNodeWidth = $(this.pointers[index].getComponentId()).width();
-      this.pointers[index].updateComponent({
-        [`${options._sliderPointerDirection.centeringSliderOnArea}`] : '-50%',
-        [`${options._sliderPointerDirection.sliderStartIndent}`] : `${pointer._percentMarginStartingValue}%`,
-        [`margin-${options._sliderPointerDirection.sliderStartIndent}`] : `-${pointerNodeWidth/2}px`,
-      });
-      this.pointers[index].setTipValue(options.pointers[index].endValue);
+      this.pointerUpdate(index, options);
     });
   }
 

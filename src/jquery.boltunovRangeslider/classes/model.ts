@@ -123,7 +123,11 @@ class Model {
   /**
    * Возвращает массив указателей (pointers)
    */
-  getPointers():PointersInfo {
+  getPointers(): PointersInfo {
+    return this.rangesliderStateOptions.pointers;
+  }
+
+  setPointer(): PointersInfo {
     return this.rangesliderStateOptions.pointers;
   }
 

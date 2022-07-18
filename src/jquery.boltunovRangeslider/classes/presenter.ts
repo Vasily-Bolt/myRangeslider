@@ -16,13 +16,13 @@ class Presenter {
     this.viewThis = new View ( contructorOptions.sliderNode );
     const controlPanelElems : Array<cPanelElementObject> = [
       {
-        name : rangesliderEvents.tips,
+        name : 'tipsToggle',
         tip : 'Toggle Tips',
         event : rangesliderEvents.tips,
         type : 'checkbox',
         value : this.modelThis.getOptions().tip,
       },{
-        name : rangesliderEvents.direction,
+        name : 'directionToggle',
         tip : 'Toggle direction',
         event : rangesliderEvents.direction,
         type : 'checkbox',
@@ -45,12 +45,7 @@ class Presenter {
     controlPanelElems.forEach(elem => {
       this.viewThis.addCPanelElement(elem);
     })
-    // this.viewThis.addCPanelElement({
-    //   name : rangesliderEvents.tips,
-    //   tip : 'Toggle Tips',
-    //   type : 'checkbox',
-    //   value : this.modelThis.getOptions().tip,
-    // });
+    
   }
 
   renderRangeslider(): void{
@@ -63,11 +58,43 @@ class Presenter {
   }
 
   activateListeners(): void{
+    //Возвращает ID родителя поля в котором произошли изменения
+    function getClickedId(eventNode: JQuery<EventTarget>): String {
+      return eventNode.closest('p').attr('id');
+    }
+    //Устанавливает значение 0 если поле пустое
+    function zeroIfEmpty(inputField: JQuery<EventTarget>): void {
+      const eventTargetValue = inputField.val() as String;
+      if ( inputField.val() == '' )  inputField.val('0');
+    }
+    //Удаляет все символы кроме цифр
+    function onlyDigits(eventNode: JQuery<EventTarget>): void {
+      const eventTargetValue = eventNode.val() as String;
+      if ( eventTargetValue[0] == '-' ) {
+        eventNode.val(`-${eventTargetValue.substr(1).replace (/\D/g, '')}`);
+        if ( eventTargetValue[1] == '0') eventNode.val( `-${eventTargetValue.substr(2)}`);
+      } else {
+        eventNode.val(eventTargetValue.replace (/\D/g, ''));
+      }
+      if ( eventTargetValue[0] == '0' && eventTargetValue.length > 1 ) eventNode.val( eventTargetValue.substr(1) );
+    };
+
     $(this.node).on(rangesliderEvents.tips, ()=> {
       this.viewThis.toggleTips();
     } );
-    $(this.node).on(rangesliderEvents.inputFieldChanged, (event)=> {
-      console.log(event.target.closest('p').id);
+
+    $(this.node).on(rangesliderEvents.inputFieldChanged, (event: Event)=> {
+      const eventTargetNode = $(event.target);
+      const blockName = getClickedId(eventTargetNode)
+      const fieldName = blockName.slice(blockName.lastIndexOf('-')+1);
+      switch(fieldName) {
+        case 'min' : 
+          onlyDigits(eventTargetNode);
+          break;
+        case 'max' : 
+          onlyDigits(eventTargetNode);
+          break;
+      }
     } );
 
     $(this.node).on(rangesliderEvents.direction, ()=> {
@@ -81,7 +108,7 @@ class Presenter {
       this.viewThis.UpdatePointers(updatedOptions);
 
     } );
-      
+    
   }
 }
 
